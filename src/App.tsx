@@ -1,26 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import BottomNav from "./components/BottomNav/BottomNav";
+import ToastProvider from "./components/Toast/ToastProvider";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Sessao from "./pages/Sessao/Sessao";
-import BottomNav from "./components/BottomNav/BottomNav";
+import Treinos from "./pages/Treinos/Treinos";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="bg-black min-vh-100 d-flex justify-content-center">
-        <div
-          className="bg-dark text-light w-100 position-relative"
-          style={{ maxWidth: "480px" }}
-        >
-          <div className="p-3 pb-5 mb-5">
+      <ToastProvider>
+        <div className="app">
+          <main className="app__conteudo">
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/treinos" element={<Treinos />} />
               <Route path="/sessao" element={<Sessao />} />
             </Routes>
-          </div>
-
+          </main>
           <BottomNav />
         </div>
-      </div>
+      </ToastProvider>
     </BrowserRouter>
   );
 }

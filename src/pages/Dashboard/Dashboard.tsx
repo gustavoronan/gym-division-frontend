@@ -1,59 +1,208 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
+import ExercicioForm from "../../components/ExercicioForm/ExercicioForm";
+import Modal from "../../components/Modal/Modal";
+import {
+  ErroEstado,
+  ListaSkeleton,
+  VazioEstado,
+} from "../../components/States/States";
+import { useToast } from "../../components/Toast/toastContext";
+import TreinoForm from "../../components/TreinoForm/TreinoForm";
+import { useExercicios } from "../../hooks/useExercicios";
+import { treinosApi } from "../../services/api";
+import type { Exercicio, ExercicioInput } from "../../types/exercicio";
+import type { TreinoInput } from "../../types/treino";
+import { formatarDataCurta } from "../../utils/data";
 
-interface Exercicio {
-  id: number;
-  nome: string;
-  series: number;
-  repeticoes: number;
-  concluido: boolean;
-  data: string;
-}
+const LIMITE_BUSCA = 5;
 
 export default function Dashboard() {
-  const [exercicios, setExercicios] = useState<Exercicio[]>([]);
-  const [nome, setNome] = useState("");
-  const [series, setSeries] = useState("");
-  const [repeticoes, setRepeticoes] = useState("");
+  const { exercicios, carregando, erro, recarregar, criar, editar, excluir } =
+    useExercicios();
+  const toast = useToast();
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/exercicios/")
-      .then((response) => response.json())
-      .then((data) => setExercicios(data))
-      .catch((error) => console.error("Erro ao buscar exercícios:", error));
-  }, []);
+  const [busca, setBusca] = useState("");
+  const [editando, setEditando] = useState<Exercicio | "novo" | null>(null);
+  const [removendo, setRemovendo] = useState<Exercicio | null>(null);
+  const [salvandoTreino, setSalvandoTreino] = useState(false);
 
-  console.log(exercicios);
+  const termo = busca.trim().toLowerCase();
+  const visiveis = termo
+    ? exercicios.filter((e) => e.nome.toLowerCase().includes(termo))
+    : exercicios;
+
+  const salvar = async (dados: ExercicioInput) => {
+    try {
+      if (editando === "novo") {
+        await criar(dados);
+        toast.sucesso("Exercício adicionado!");
+      } else if (editando) {
+        await editar(editando.id, dados);
+        toast.sucesso("Alterações salvas!");
+      }
+      setEditando(null);
+    } catch (e) {
+      toast.erro((e as Error).message);
+    }
+  };
+
+  const salvarComoTreino = async (dados: TreinoInput) => {
+    try {
+      await treinosApi.criar(dados);
+      toast.sucesso(`Treino "${dados.nome}" salvo!`);
+      setSalvandoTreino(false);
+    } catch (e) {
+      toast.erro((e as Error).message);
+    }
+  };
+
+  const confirmarExclusao = async () => {
+    if (!removendo) return;
+    try {
+      await excluir(removendo.id);
+      toast.sucesso("Exercício removido.");
+      setRemovendo(null);
+    } catch (e) {
+      toast.erro((e as Error).message);
+    }
+  };
 
   return (
-    <div>
-      <h3 className="mb-4 fw-bold">Catálogo de Exercícios</h3>
+    <>
+      <header className="page-header">
+        <div>
+          <h1>Meus exercícios</h1>
+          <p>
+            {carregando
+              ? "Carregando…"
+              : `${exercicios.length} ${exercicios.length === 1 ? "exercício cadastrado" : "exercícios cadastrados"}`}
+          </p>
+        </div>
+        <button
+          className="btn btn--primary btn--icon-text"
+          onClick={() => setEditando("novo")}
+        >
+          <i className="bi bi-plus-lg" /> Novo
+        </button>
+      </header>
 
-      {exercicios.length === 0 ? (
-        <p className="text-secondary text-center mt-5">
-          Nenhum exercício encontrado...
-        </p>
+      {exercicios.length >= LIMITE_BUSCA && (
+        <label className="search">
+          <i className="bi bi-search" />
+          <input
+            type="search"
+            value={busca}
+            placeholder="Buscar exercício"
+            onChange={(e) => setBusca(e.target.value)}
+          />
+        </label>
+      )}
+
+      {carregando ? (
+        <ListaSkeleton />
+      ) : erro ? (
+        <ErroEstado mensagem={erro} onTentar={recarregar} />
+      ) : exercicios.length === 0 ? (
+        <VazioEstado
+          icone="bi-lightning-charge"
+          titulo="Nenhum exercício ainda"
+          texto="Cadastre seu primeiro exercício para montar o treino."
+        >
+          <button className="btn btn--primary" onClick={() => setEditando("novo")}>
+            <i className="bi bi-plus-lg" /> Adicionar exercício
+          </button>
+        </VazioEstado>
+      ) : visiveis.length === 0 ? (
+        <VazioEstado
+          icone="bi-search"
+          titulo="Nada encontrado"
+          texto={`Nenhum exercício corresponde a "${busca.trim()}".`}
+        />
       ) : (
-        <div className="d-flex flex-column gap-3">
-          {exercicios.map((exercicio) => (
-            <div
-              key={exercicio.id}
-              className="card bg-dark text-light border-secondary shadow-sm"
-            >
-              <div className="card-body d-flex justify-content-between align-items-center p-3">
-                <div className="d-flex align-items-center gap-3">
-                  <div className="bg-secondary bg-opacity-25 p-2 rounded">
-                    <i className="bi bi-activity text-primary fs-4"></i>
-                  </div>
-                  <span className="fs-5 fw-semibold">{exercicio.nome}</span>
-                </div>
-                <span className="badge bg-primary rounded-pill px-3 py-2">
-                  {exercicio.series}x{exercicio.repeticoes}
+        <ul className="lista">
+          {visiveis.map((exercicio) => (
+            <li key={exercicio.id} className="card exercicio">
+              <div className="exercicio__icone">
+                <i className="bi bi-lightning-charge-fill" />
+              </div>
+              <div className="exercicio__info">
+                <strong>{exercicio.nome}</strong>
+                <span>
+                  {exercicio.series} × {exercicio.repeticoes} ·{" "}
+                  {formatarDataCurta(exercicio.data)}
                 </span>
               </div>
-            </div>
+              <div className="exercicio__acoes">
+                <button
+                  className="icon-btn"
+                  onClick={() => setEditando(exercicio)}
+                  aria-label={`Editar ${exercicio.nome}`}
+                >
+                  <i className="bi bi-pencil" />
+                </button>
+                <button
+                  className="icon-btn icon-btn--danger"
+                  onClick={() => setRemovendo(exercicio)}
+                  aria-label={`Excluir ${exercicio.nome}`}
+                >
+                  <i className="bi bi-trash3" />
+                </button>
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+
+      {!carregando && !erro && exercicios.length > 0 && (
+        <button
+          className="btn btn--ghost btn--block"
+          onClick={() => setSalvandoTreino(true)}
+        >
+          <i className="bi bi-bookmark-plus" /> Salvar como treino
+        </button>
+      )}
+
+      {salvandoTreino && (
+        <Modal titulo="Salvar como treino" onFechar={() => setSalvandoTreino(false)}>
+          <TreinoForm
+            inicial={{
+              nome: "",
+              itens: exercicios.map(({ nome, series, repeticoes }) => ({
+                nome,
+                series,
+                repeticoes,
+              })),
+            }}
+            textoSalvar="Salvar treino"
+            onSalvar={salvarComoTreino}
+            onCancelar={() => setSalvandoTreino(false)}
+          />
+        </Modal>
+      )}
+
+      {editando && (
+        <Modal
+          titulo={editando === "novo" ? "Novo exercício" : "Editar exercício"}
+          onFechar={() => setEditando(null)}
+        >
+          <ExercicioForm
+            inicial={editando === "novo" ? undefined : editando}
+            onSalvar={salvar}
+            onCancelar={() => setEditando(null)}
+          />
+        </Modal>
+      )}
+
+      {removendo && (
+        <ConfirmDialog
+          titulo="Excluir exercício"
+          mensagem={`Tem certeza que deseja excluir "${removendo.nome}"? Essa ação não pode ser desfeita.`}
+          textoConfirmar="Excluir"
+          onConfirmar={confirmarExclusao}
+          onCancelar={() => setRemovendo(null)}
+        />
+      )}
+    </>
   );
 }

@@ -1,34 +1,27 @@
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+const ITENS = [
+  { to: "/", rotulo: "Exercícios", icone: "bi-list-check" },
+  { to: "/treinos", rotulo: "Treinos", icone: "bi-collection-fill" },
+  { to: "/sessao", rotulo: "Treinar", icone: "bi-lightning-charge-fill" },
+];
 
 export default function BottomNav() {
-  const location = useLocation();
-
-  const getCorAtiva = (caminho: string) => {
-    return location.pathname === caminho ? "text-primary" : "text-secondary";
-  };
-
   return (
-    <nav
-      className="navbar fixed-bottom bg-dark border-top border-secondary pb-2 pt-2"
-      style={{ maxWidth: "480px", margin: "0 auto" }}
-    >
-      <div className="container-fluid d-flex justify-content-around">
-        <Link
-          to="/"
-          className={`text-decoration-none text-center ${getCorAtiva("/")}`}
+    <nav className="bottom-nav" aria-label="Navegação principal">
+      {ITENS.map(({ to, rotulo, icone }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end
+          className={({ isActive }) =>
+            `bottom-nav__item ${isActive ? "bottom-nav__item--ativo" : ""}`
+          }
         >
-          <i className="bi bi-house-door-fill fs-4"></i>
-          <div style={{ fontSize: "0.75rem" }}>Início</div>
-        </Link>
-
-        <Link
-          to="/sessao"
-          className={`text-decoration-none text-center ${getCorAtiva("/sessao")}`}
-        >
-          <i className="bi bi-play-circle-fill fs-4"></i>
-          <div style={{ fontSize: "0.75rem" }}>Treinar</div>
-        </Link>
-      </div>
+          <i className={`bi ${icone}`} />
+          <span>{rotulo}</span>
+        </NavLink>
+      ))}
     </nav>
   );
 }
