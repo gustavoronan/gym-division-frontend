@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ExercicioForm from "../../components/ExercicioForm/ExercicioForm";
+import GifExercicio from "../../components/GifExercicio/GifExercicio";
 import Modal from "../../components/Modal/Modal";
 import {
   ErroEstado,
@@ -123,9 +124,13 @@ export default function Dashboard() {
         <ul className="lista">
           {visiveis.map((exercicio) => (
             <li key={exercicio.id} className="card exercicio">
-              <div className="exercicio__icone">
-                <i className="bi bi-lightning-charge-fill" />
-              </div>
+              {exercicio.exercicio_ref ? (
+                <GifExercicio exercicioRef={exercicio.exercicio_ref} nome={exercicio.nome} />
+              ) : (
+                <div className="exercicio__icone">
+                  <i className="bi bi-lightning-charge-fill" />
+                </div>
+              )}
               <div className="exercicio__info">
                 <strong>{exercicio.nome}</strong>
                 <span>
@@ -168,10 +173,11 @@ export default function Dashboard() {
           <TreinoForm
             inicial={{
               nome: "",
-              itens: exercicios.map(({ nome, series, repeticoes }) => ({
+              itens: exercicios.map(({ nome, series, repeticoes, exercicio_ref }) => ({
                 nome,
                 series,
                 repeticoes,
+                exercicio_ref,
               })),
             }}
             textoSalvar="Salvar treino"

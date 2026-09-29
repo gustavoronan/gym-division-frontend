@@ -857,3 +857,167 @@ button:disabled {
 .form__actions--coluna .btn {
   flex: none;
 }
+
+/* ---------- GIFs de execução ---------- */
+
+.gif-thumb {
+  position: relative;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+}
+
+.gif-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gif-thumb__play {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 0.85rem;
+}
+
+.gif-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.gif-demo img {
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.gif-demo p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.gif-demo small {
+  color: #5b6378;
+  font-size: 0.72rem;
+}
+
+/* Na sessão o card inteiro é um botão; o GIF fica ao lado, fora dele. */
+.sessao-item {
+  position: relative;
+}
+
+.check--com-gif {
+  padding-right: 84px;
+}
+
+.sessao-item__gif {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+}
+
+/* ---------- Busca no catálogo ---------- */
+
+.busca-ex {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.busca-ex__vinculo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 2px 4px 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.busca-ex__desfazer {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: inherit;
+  font-size: 1rem;
+}
+
+.busca-ex__lista {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 4px 0 0;
+  padding: 4px;
+  list-style: none;
+  max-height: 280px;
+  overflow-y: auto;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.busca-ex__lista button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.busca-ex__lista button:hover,
+.busca-ex__lista button:focus-visible {
+  background: var(--surface-2);
+}
+
+.busca-ex__lista img {
+  flex: none;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.busca-ex__lista span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.busca-ex__lista strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.busca-ex__lista small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}

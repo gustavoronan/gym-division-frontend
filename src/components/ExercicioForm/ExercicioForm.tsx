@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import BuscaExercicio from "../BuscaExercicio/BuscaExercicio";
 import type { Exercicio, ExercicioInput } from "../../types/exercicio";
 
 interface Props {
@@ -13,6 +14,7 @@ const MAX_SERIES = 20;
 export default function ExercicioForm({ inicial, onSalvar, onCancelar }: Props) {
   const [nome, setNome] = useState(inicial?.nome ?? "");
   const [series, setSeries] = useState(inicial?.series ?? 3);
+  const [exercicioRef, setExercicioRef] = useState(inicial?.exercicio_ref ?? "");
   const [repeticoes, setRepeticoes] = useState(inicial?.repeticoes ?? "");
   const [salvando, setSalvando] = useState(false);
 
@@ -30,6 +32,7 @@ export default function ExercicioForm({ inicial, onSalvar, onCancelar }: Props) 
         nome: nome.trim(),
         series,
         repeticoes: repeticoes.trim(),
+        exercicio_ref: exercicioRef,
       });
     } finally {
       setSalvando(false);
@@ -38,16 +41,22 @@ export default function ExercicioForm({ inicial, onSalvar, onCancelar }: Props) 
 
   return (
     <form className="form" onSubmit={enviar}>
-      <label className="field">
+      <div className="field">
         <span>Nome do exercício</span>
-        <input
+        <BuscaExercicio
           autoFocus
-          value={nome}
-          maxLength={100}
+          valor={nome}
+          exercicioRef={exercicioRef}
           placeholder="Ex.: Supino reto"
-          onChange={(e) => setNome(e.target.value)}
+          ariaLabel="Nome do exercício"
+          onDigitar={setNome}
+          onEscolher={(item) => {
+            setNome(item.nome);
+            setExercicioRef(item.id);
+          }}
+          onLimparRef={() => setExercicioRef("")}
         />
-      </label>
+      </div>
 
       <div className="form__row">
         <div className="field">

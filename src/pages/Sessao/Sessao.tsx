@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import GifExercicio from "../../components/GifExercicio/GifExercicio";
 import ProgressRing from "../../components/ProgressRing/ProgressRing";
 import {
   ErroEstado,
@@ -92,9 +93,9 @@ export default function Sessao() {
 
           <ul className="lista">
             {exercicios.map((e) => (
-              <li key={e.id}>
+              <li key={e.id} className="sessao-item">
                 <button
-                  className={`card check ${e.concluido ? "check--feito" : ""}`}
+                  className={`card check ${e.concluido ? "check--feito" : ""} ${e.exercicio_ref ? "check--com-gif" : ""}`}
                   onClick={() => alternar(e.id, !e.concluido)}
                   aria-pressed={e.concluido}
                 >
@@ -109,6 +110,11 @@ export default function Sessao() {
                     </span>
                   </span>
                 </button>
+                {e.exercicio_ref && (
+                  <div className="sessao-item__gif">
+                    <GifExercicio exercicioRef={e.exercicio_ref} nome={e.nome} />
+                  </div>
+                )}
               </li>
             ))}
           </ul>

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import BuscaExercicio from "../BuscaExercicio/BuscaExercicio";
 import type { ExercicioInput } from "../../types/exercicio";
 import type { TreinoInput } from "../../types/treino";
 
@@ -16,6 +17,7 @@ interface Linha {
   nome: string;
   series: string;
   repeticoes: string;
+  exercicioRef: string;
 }
 
 let proximaChave = 0;
@@ -25,6 +27,7 @@ const novaLinha = (item?: ExercicioInput): Linha => ({
   nome: item?.nome ?? "",
   series: String(item?.series ?? 3),
   repeticoes: item?.repeticoes ?? "",
+  exercicioRef: item?.exercicio_ref ?? "",
 });
 
 const seriesValidas = (texto: string) => {
@@ -75,6 +78,7 @@ export default function TreinoForm({
           nome: l.nome.trim(),
           series: Number(l.series),
           repeticoes: l.repeticoes.trim(),
+          exercicio_ref: l.exercicioRef,
         })),
       });
     } finally {
@@ -100,12 +104,20 @@ export default function TreinoForm({
         <ul className="linhas">
           {linhas.map((l, i) => (
             <li key={l.chave} className="linha">
-              <input
-                value={l.nome}
-                maxLength={100}
+              <BuscaExercicio
+                valor={l.nome}
+                exercicioRef={l.exercicioRef}
                 placeholder={`Exercício ${i + 1}`}
-                aria-label={`Nome do exercício ${i + 1}`}
-                onChange={(e) => atualizar(l.chave, "nome", e.target.value)}
+                ariaLabel={`Nome do exercício ${i + 1}`}
+                onDigitar={(nome) => atualizar(l.chave, "nome", nome)}
+                onEscolher={(item) =>
+                  setLinhas((ls) =>
+                    ls.map((x) =>
+                      x.chave === l.chave ? { ...x, nome: item.nome, exercicioRef: item.id } : x,
+                    ),
+                  )
+                }
+                onLimparRef={() => atualizar(l.chave, "exercicioRef", "")}
               />
               <div className="linha__detalhes">
                 <input
