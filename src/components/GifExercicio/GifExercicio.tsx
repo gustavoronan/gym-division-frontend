@@ -39,7 +39,7 @@ export default function GifExercicio({ exercicioRef, nome }: Props) {
       </button>
 
       {aberto && (
-        <Modal titulo={item.nome} onFechar={() => setAberto(false)}>
+        <Modal titulo={item.nome} centralizado onFechar={() => setAberto(false)}>
           <div className="gif-demo">
             <img src={urlDoGif(item)} alt={`Execução de ${item.nome}`} width={180} height={180} />
             <p>

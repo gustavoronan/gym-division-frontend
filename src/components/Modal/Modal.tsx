@@ -1,12 +1,15 @@
 import { useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 interface Props {
   titulo: string;
   onFechar: () => void;
+  // Abre no centro da tela (lightbox) em vez de subir da base.
+  centralizado?: boolean;
   children: ReactNode;
 }
 
-export default function Modal({ titulo, onFechar, children }: Props) {
+export default function Modal({ titulo, onFechar, centralizado, children }: Props) {
   useEffect(() => {
     const aoTeclar = (e: KeyboardEvent) => e.key === "Escape" && onFechar();
     document.addEventListener("keydown", aoTeclar);
@@ -17,10 +20,14 @@ export default function Modal({ titulo, onFechar, children }: Props) {
     };
   }, [onFechar]);
 
-  return (
-    <div className="modal-overlay" onMouseDown={onFechar}>
+  // No body, para o overlay cobrir a tela mesmo se um ancestral tiver transform.
+  return createPortal(
+    <div
+      className={`modal-overlay ${centralizado ? "modal-overlay--centro" : ""}`}
+      onMouseDown={onFechar}
+    >
       <div
-        className="modal-sheet"
+        className={`modal-sheet ${centralizado ? "modal-sheet--centro" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={titulo}
@@ -35,6 +42,7 @@ export default function Modal({ titulo, onFechar, children }: Props) {
         </header>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
