@@ -1036,3 +1036,112 @@ button:disabled {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
   animation: aparecer 0.2s ease-out;
 }
+
+/* ---------- Login ---------- */
+
+.login {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.login__carregando {
+  color: var(--muted);
+}
+
+.login__card {
+  width: 100%;
+  max-width: 380px;
+  padding: 28px 22px;
+}
+
+.login__marca {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.login__marca i {
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+.login__marca h1 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.login__marca p {
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.login__erro {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+}
+
+/* ---------- Usuários (admin) ---------- */
+
+.usuario {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.usuario--inativo {
+  opacity: 0.55;
+}
+
+.usuario__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.usuario__info strong,
+.usuario__info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.usuario__info span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.selo {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.7rem;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.selo--off {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
