@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../Auth/authContext";
+import { useNotificacoes } from "../Notificacoes/notificacoesContext";
 
 const ITENS = [
   { to: "/", rotulo: "Exercícios", icone: "bi-list-check" },
@@ -13,6 +14,7 @@ const ITEM_ADMIN = { to: "/usuarios", rotulo: "Usuários", icone: "bi-people-fil
 
 export default function BottomNav() {
   const { usuario } = useAuth();
+  const { pedidosAmizade } = useNotificacoes();
   const itens = usuario.is_staff ? [...ITENS, ITEM_ADMIN] : ITENS;
 
   return (
@@ -27,6 +29,14 @@ export default function BottomNav() {
           }
         >
           <i className={`bi ${icone}`} />
+          {to === "/amigos" && pedidosAmizade > 0 && (
+            <b
+              className="bottom-nav__selo"
+              aria-label={`${pedidosAmizade} pedidos de amizade`}
+            >
+              {pedidosAmizade}
+            </b>
+          )}
           <span>{rotulo}</span>
         </NavLink>
       ))}

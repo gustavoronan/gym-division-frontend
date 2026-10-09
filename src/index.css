@@ -1239,3 +1239,25 @@ button:disabled {
 .perfil {
   padding: 16px;
 }
+
+/* ---------- Notificações ---------- */
+
+.bottom-nav__item {
+  position: relative;
+}
+
+.bottom-nav__selo {
+  position: absolute;
+  top: 8px;
+  left: calc(50% + 6px);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}

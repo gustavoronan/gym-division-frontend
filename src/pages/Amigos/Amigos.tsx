@@ -7,6 +7,7 @@ import {
   ListaSkeleton,
   VazioEstado,
 } from "../../components/States/States";
+import { useNotificacoes } from "../../components/Notificacoes/notificacoesContext";
 import { useToast } from "../../components/Toast/toastContext";
 import { amigosApi } from "../../services/api";
 import type { Amigos as AmigosData, Amizade, Pessoa } from "../../types/social";
@@ -15,6 +16,7 @@ import { nomeDe } from "./nomeDe";
 export default function Amigos() {
   const toast = useToast();
   const navigate = useNavigate();
+  const { recarregar: recarregarAvisos } = useNotificacoes();
 
   const [dados, setDados] = useState<AmigosData | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -40,7 +42,10 @@ export default function Amigos() {
   }, []);
 
   // Rebusca a lista depois de uma ação (aceitar, recusar, adicionar...).
-  const atualizar = () => amigosApi.listar().then(setDados);
+  const atualizar = async () => {
+    setDados(await amigosApi.listar());
+    recarregarAvisos();
+  };
 
   const aceitar = async (a: Amizade) => {
     try {

@@ -207,3 +207,9 @@ export const amigosApi = {
     });
   },
 };
+
+export const notificacoesApi = {
+  resumo() {
+    return request<{ pedidos_amizade: Amizade[] }>("/notificacoes/");
+  },
+};
