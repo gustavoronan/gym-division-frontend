@@ -1145,3 +1145,93 @@ button:disabled {
   height: 18px;
   accent-color: var(--accent);
 }
+
+/* ---------- Amigos (rede social) ---------- */
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.secao h2 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.usuario__abrir {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.usuario__abrir > i {
+  color: var(--muted);
+}
+
+.voltar {
+  align-self: flex-start;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.voltar:hover {
+  color: var(--accent);
+}
+
+.treino__escolha {
+  justify-content: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.treino__escolha input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.treino--marcado {
+  border-color: var(--accent);
+}
+
+.lista--com-barra {
+  padding-bottom: 72px;
+}
+
+.barra-acao {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(11, 13, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  z-index: 9;
+}
+
+.barra-acao .btn {
+  flex: 1;
+}

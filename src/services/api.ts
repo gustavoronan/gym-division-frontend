@@ -1,4 +1,5 @@
 import type { Exercicio, ExercicioInput } from "../types/exercicio";
+import type { Amigos, Amizade, TreinosDoAmigo } from "../types/social";
 import type { Treino, TreinoInput } from "../types/treino";
 import type { Usuario, UsuarioInput } from "../types/usuario";
 import { EVENTO_SESSAO_EXPIRADA, sessao } from "./sessao";
@@ -147,6 +148,43 @@ export const treinosApi = {
     return request<Exercicio[]>(`/treinos/${id}/iniciar/`, {
       method: "POST",
       body: JSON.stringify({ substituir }),
+    });
+  },
+};
+
+export const amigosApi = {
+  listar() {
+    return request<Amigos>("/amigos/");
+  },
+
+  // Envia o pedido; se a pessoa já tinha pedido, a amizade é aceita na hora.
+  adicionar(username: string) {
+    return request<Amizade>("/amigos/", {
+      method: "POST",
+      body: JSON.stringify({ username }),
+    });
+  },
+
+  aceitar(amizadeId: number) {
+    return request<Amizade>(`/amizades/${amizadeId}/aceitar/`, { method: "POST" });
+  },
+
+  // Remove amigo, recusa pedido recebido ou cancela pedido enviado.
+  remover(amizadeId: number) {
+    return request<void>(`/amizades/${amizadeId}/`, { method: "DELETE" });
+  },
+
+  treinos(usuarioId: number) {
+    return request<TreinosDoAmigo>(`/amigos/${usuarioId}/treinos/`);
+  },
+
+  // Copia os treinos escolhidos (ou todos) do amigo para os meus.
+  copiar(usuarioId: number, selecao: number[] | "todos") {
+    return request<Treino[]>(`/amigos/${usuarioId}/copiar/`, {
+      method: "POST",
+      body: JSON.stringify(
+        selecao === "todos" ? { todos: true } : { treinos: selecao },
+      ),
     });
   },
 };
