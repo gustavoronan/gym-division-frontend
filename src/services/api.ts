@@ -57,6 +57,25 @@ export const authApi = {
     });
   },
 
+  registrar(dados: { username: string; first_name: string; password: string }) {
+    return request<{ token: string; usuario: Usuario }>("/auth/registro/", {
+      method: "POST",
+      body: JSON.stringify(dados),
+    });
+  },
+
+  atualizarPerfil(dados: {
+    username?: string;
+    first_name?: string;
+    senha_atual?: string;
+    password?: string;
+  }) {
+    return request<Usuario>("/auth/me/", {
+      method: "PATCH",
+      body: JSON.stringify(dados),
+    });
+  },
+
   eu() {
     return request<Usuario>("/auth/me/");
   },

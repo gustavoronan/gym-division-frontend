@@ -57,5 +57,5 @@ export default function AuthGate({ children }: { children: ReactNode }) {
 
   if (!usuario) return <Login onEntrar={entrar} />;
 
-  return <AuthContext.Provider value={{ usuario, sair }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ usuario, sair, atualizar: setUsuario }}>{children}</AuthContext.Provider>;
 }

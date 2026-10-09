@@ -1235,3 +1235,7 @@ button:disabled {
 .barra-acao .btn {
   flex: 1;
 }
+
+.perfil {
+  padding: 16px;
+}

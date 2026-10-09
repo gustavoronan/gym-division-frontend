@@ -6,6 +6,7 @@ import ToastProvider from "./components/Toast/ToastProvider";
 import Amigos from "./pages/Amigos/Amigos";
 import AmigoTreinos from "./pages/Amigos/AmigoTreinos";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Perfil from "./pages/Perfil/Perfil";
 import Sessao from "./pages/Sessao/Sessao";
 import Treinos from "./pages/Treinos/Treinos";
 import Usuarios from "./pages/Usuarios/Usuarios";
@@ -20,6 +21,7 @@ function Rotas() {
           <Route path="/treinos" element={<Treinos />} />
           <Route path="/amigos" element={<Amigos />} />
           <Route path="/amigos/:id" element={<AmigoTreinos />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route path="/sessao" element={<Sessao />} />
           {usuario.is_staff && <Route path="/usuarios" element={<Usuarios />} />}
           <Route path="*" element={<Navigate to="/" replace />} />
