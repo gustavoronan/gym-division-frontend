@@ -6,7 +6,9 @@ import NotificacoesProvider from "./components/Notificacoes/NotificacoesProvider
 import ToastProvider from "./components/Toast/ToastProvider";
 import Amigos from "./pages/Amigos/Amigos";
 import AmigoTreinos from "./pages/Amigos/AmigoTreinos";
+import TreinoPublico from "./pages/Compartilhar/TreinoPublico";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Historico from "./pages/Historico/Historico";
 import Perfil from "./pages/Perfil/Perfil";
 import Sessao from "./pages/Sessao/Sessao";
 import Treinos from "./pages/Treinos/Treinos";
@@ -25,6 +27,7 @@ function Rotas() {
             <Route path="/amigos/:id" element={<AmigoTreinos />} />
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/sessao" element={<Sessao />} />
+            <Route path="/historico" element={<Historico />} />
             {usuario.is_staff && (
               <Route path="/usuarios" element={<Usuarios />} />
             )}
@@ -41,9 +44,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <AuthGate>
-          <Rotas />
-        </AuthGate>
+        <Routes>
+          <Route path="/compartilhar/:codigo" element={<TreinoPublico />} />
+          <Route
+            path="*"
+            element={
+              <AuthGate>
+                <Rotas />
+              </AuthGate>
+            }
+          />
+        </Routes>
       </ToastProvider>
     </BrowserRouter>
   );

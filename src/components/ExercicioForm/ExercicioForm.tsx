@@ -16,6 +16,9 @@ export default function ExercicioForm({ inicial, onSalvar, onCancelar }: Props) 
   const [series, setSeries] = useState(inicial?.series ?? 3);
   const [exercicioRef, setExercicioRef] = useState(inicial?.exercicio_ref ?? "");
   const [repeticoes, setRepeticoes] = useState(inicial?.repeticoes ?? "");
+  const [carga, setCarga] = useState(
+    inicial?.carga !== null && inicial?.carga !== undefined ? String(inicial.carga) : ""
+  );
   const [salvando, setSalvando] = useState(false);
 
   const ajustarSeries = (delta: number) =>
@@ -28,10 +31,12 @@ export default function ExercicioForm({ inicial, onSalvar, onCancelar }: Props) 
     if (!valido || salvando) return;
     setSalvando(true);
     try {
+      const cargaNum = carga.trim() !== "" ? Number(carga) : null;
       await onSalvar({
         nome: nome.trim(),
         series,
         repeticoes: repeticoes.trim(),
+        carga: cargaNum,
         exercicio_ref: exercicioRef,
       });
     } finally {
@@ -89,6 +94,19 @@ export default function ExercicioForm({ inicial, onSalvar, onCancelar }: Props) 
             maxLength={50}
             placeholder="Ex.: 8-12"
             onChange={(e) => setRepeticoes(e.target.value)}
+          />
+        </label>
+
+        <label className="field">
+          <span>Carga (kg)</span>
+          <input
+            type="number"
+            step="0.5"
+            min={0}
+            max={999}
+            value={carga}
+            placeholder="Opcional (ex.: 20)"
+            onChange={(e) => setCarga(e.target.value)}
           />
         </label>
       </div>

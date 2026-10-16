@@ -11,13 +11,19 @@ import { useNotificacoes } from "../../components/Notificacoes/notificacoesConte
 import { useToast } from "../../components/Toast/toastContext";
 import { amigosApi } from "../../services/api";
 import type { Amigos as AmigosData, Amizade, Pessoa } from "../../types/social";
+import DesafiosAba from "./DesafiosAba";
+import FeedAba from "./FeedAba";
+import RankingAba from "./RankingAba";
 import { nomeDe } from "./nomeDe";
+
+type AbaSocial = "feed" | "ranking" | "desafios" | "amigos";
 
 export default function Amigos() {
   const toast = useToast();
   const navigate = useNavigate();
   const { recarregar: recarregarAvisos } = useNotificacoes();
 
+  const [aba, setAba] = useState<AbaSocial>("feed");
   const [dados, setDados] = useState<AmigosData | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [tentativa, setTentativa] = useState(0);
@@ -89,134 +95,183 @@ export default function Amigos() {
     }
   };
 
-  const vazio =
-    dados &&
-    dados.amigos.length === 0 &&
-    dados.recebidos.length === 0 &&
-    dados.enviados.length === 0;
+  const pedidosPendentes = dados?.recebidos.length || 0;
 
   return (
     <>
       <header className="page-header">
         <div>
-          <h1>Amigos</h1>
-          <p>
-            {dados
-              ? `${dados.amigos.length} ${dados.amigos.length === 1 ? "amigo" : "amigos"}`
-              : "Carregando…"}
-          </p>
+          <h1>Comunidade</h1>
+          <p>Feed, rankings semanais, desafios e amigos</p>
         </div>
-        <button
-          className="btn btn--primary btn--icon-text"
-          onClick={() => setAdicionando(true)}
-          disabled={!dados}
-        >
-          <i className="bi bi-person-plus-fill" /> Adicionar
-        </button>
+        {aba === "amigos" && (
+          <button
+            className="btn btn--primary btn--icon-text"
+            onClick={() => setAdicionando(true)}
+            disabled={!dados}
+          >
+            <i className="bi bi-person-plus-fill" /> Adicionar
+          </button>
+        )}
       </header>
 
-      {erro ? (
-        <ErroEstado mensagem={erro} onTentar={recarregar} />
-      ) : !dados ? (
-        <ListaSkeleton linhas={3} />
-      ) : vazio ? (
-        <VazioEstado
-          icone="bi-people"
-          titulo="Nenhum amigo ainda"
-          texto="Adicione alguém pelo nome de usuário para ver e copiar os treinos dela."
+      {/* Navegação entre as abas sociais */}
+      <nav className="abas-sociais-nav" aria-label="Abas da comunidade">
+        <button
+          type="button"
+          className={`aba-social-btn ${aba === "feed" ? "aba-social-btn--ativo" : ""}`}
+          onClick={() => setAba("feed")}
         >
-          <button className="btn btn--primary" onClick={() => setAdicionando(true)}>
-            <i className="bi bi-person-plus-fill" /> Adicionar amigo
-          </button>
-        </VazioEstado>
-      ) : (
+          <i className="bi bi-activity" />
+          <span>Feed</span>
+        </button>
+
+        <button
+          type="button"
+          className={`aba-social-btn ${aba === "ranking" ? "aba-social-btn--ativo" : ""}`}
+          onClick={() => setAba("ranking")}
+        >
+          <i className="bi bi-trophy-fill" />
+          <span>Ranking</span>
+        </button>
+
+        <button
+          type="button"
+          className={`aba-social-btn ${aba === "desafios" ? "aba-social-btn--ativo" : ""}`}
+          onClick={() => setAba("desafios")}
+        >
+          <i className="bi bi-fire" />
+          <span>Desafios</span>
+        </button>
+
+        <button
+          type="button"
+          className={`aba-social-btn ${aba === "amigos" ? "aba-social-btn--ativo" : ""}`}
+          onClick={() => setAba("amigos")}
+        >
+          <i className="bi bi-people-fill" />
+          <span>Amigos</span>
+          {pedidosPendentes > 0 && (
+            <span className="aba-social-badge">{pedidosPendentes}</span>
+          )}
+        </button>
+      </nav>
+
+      {/* Conteúdo da aba selecionada */}
+      {aba === "feed" && <FeedAba onIrParaAmigos={() => setAba("amigos")} />}
+
+      {aba === "ranking" && <RankingAba />}
+
+      {aba === "desafios" && <DesafiosAba />}
+
+      {aba === "amigos" && (
         <>
-          {dados.recebidos.length > 0 && (
-            <section className="secao">
-              <h2>Pedidos recebidos</h2>
-              <ul className="lista">
-                {dados.recebidos.map((a) => (
-                  <li key={a.id} className="card usuario">
-                    <Info pessoa={a.usuario} />
-                    <div className="exercicio__acoes">
-                      <button
-                        className="btn btn--primary btn--sm"
-                        onClick={() => aceitar(a)}
-                      >
-                        Aceitar
-                      </button>
-                      <button
-                        className="icon-btn icon-btn--danger"
-                        onClick={() => recusar(a)}
-                        aria-label={`Recusar pedido de ${nomeDe(a.usuario)}`}
-                      >
-                        <i className="bi bi-x-lg" />
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </section>
+          {erro ? (
+            <ErroEstado mensagem={erro} onTentar={recarregar} />
+          ) : !dados ? (
+            <ListaSkeleton linhas={3} />
+          ) : dados.amigos.length === 0 &&
+            dados.recebidos.length === 0 &&
+            dados.enviados.length === 0 ? (
+            <VazioEstado
+              icone="bi-people"
+              titulo="Nenhum amigo ainda"
+              texto="Adicione alguém pelo nome de usuário para ver treinos no feed e disputar o ranking semanal!"
+            >
+              <button className="btn btn--primary" onClick={() => setAdicionando(true)}>
+                <i className="bi bi-person-plus-fill" /> Adicionar amigo
+              </button>
+            </VazioEstado>
+          ) : (
+            <>
+              {dados.recebidos.length > 0 && (
+                <section className="secao">
+                  <h2>Pedidos recebidos</h2>
+                  <ul className="lista">
+                    {dados.recebidos.map((a) => (
+                      <li key={a.id} className="card usuario">
+                        <Info pessoa={a.usuario} />
+                        <div className="exercicio__acoes">
+                          <button
+                            className="btn btn--primary btn--sm"
+                            onClick={() => aceitar(a)}
+                          >
+                            Aceitar
+                          </button>
+                          <button
+                            className="icon-btn icon-btn--danger"
+                            onClick={() => recusar(a)}
+                            aria-label={`Recusar pedido de ${nomeDe(a.usuario)}`}
+                          >
+                            <i className="bi bi-x-lg" />
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {dados.amigos.length > 0 && (
+                <section className="secao">
+                  <h2>Meus amigos ({dados.amigos.length})</h2>
+                  <ul className="lista">
+                    {dados.amigos.map((a) => (
+                      <li key={a.id} className="card usuario">
+                        <button
+                          className="usuario__abrir"
+                          onClick={() => navigate(`/amigos/${a.usuario.id}`)}
+                        >
+                          <Info pessoa={a.usuario} />
+                          <i className="bi bi-chevron-right" />
+                        </button>
+                        <button
+                          className="icon-btn icon-btn--danger"
+                          onClick={() => setRemovendo(a)}
+                          aria-label={`Desfazer amizade com ${nomeDe(a.usuario)}`}
+                        >
+                          <i className="bi bi-person-dash" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {dados.enviados.length > 0 && (
+                <section className="secao">
+                  <h2>Pedidos enviados</h2>
+                  <ul className="lista">
+                    {dados.enviados.map((a) => (
+                      <li key={a.id} className="card usuario">
+                        <Info pessoa={a.usuario} />
+                        <button className="btn btn--ghost btn--sm" onClick={() => recusar(a)}>
+                          Cancelar
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </>
           )}
 
-          {dados.amigos.length > 0 && (
-            <section className="secao">
-              <h2>Meus amigos</h2>
-              <ul className="lista">
-                {dados.amigos.map((a) => (
-                  <li key={a.id} className="card usuario">
-                    <button
-                      className="usuario__abrir"
-                      onClick={() => navigate(`/amigos/${a.usuario.id}`)}
-                    >
-                      <Info pessoa={a.usuario} />
-                      <i className="bi bi-chevron-right" />
-                    </button>
-                    <button
-                      className="icon-btn icon-btn--danger"
-                      onClick={() => setRemovendo(a)}
-                      aria-label={`Desfazer amizade com ${nomeDe(a.usuario)}`}
-                    >
-                      <i className="bi bi-person-dash" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
+          {adicionando && (
+            <Modal titulo="Adicionar amigo" onFechar={() => setAdicionando(false)}>
+              <AdicionarForm onEnviar={adicionar} onCancelar={() => setAdicionando(false)} />
+            </Modal>
           )}
 
-          {dados.enviados.length > 0 && (
-            <section className="secao">
-              <h2>Pedidos enviados</h2>
-              <ul className="lista">
-                {dados.enviados.map((a) => (
-                  <li key={a.id} className="card usuario">
-                    <Info pessoa={a.usuario} />
-                    <button className="btn btn--ghost btn--sm" onClick={() => recusar(a)}>
-                      Cancelar
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
+          {removendo && (
+            <ConfirmDialog
+              titulo="Desfazer amizade"
+              mensagem={`Remover ${nomeDe(removendo.usuario)} dos seus amigos? Os treinos que você já copiou continuam com você.`}
+              textoConfirmar="Remover"
+              onConfirmar={confirmarRemocao}
+              onCancelar={() => setRemovendo(null)}
+            />
           )}
         </>
-      )}
-
-      {adicionando && (
-        <Modal titulo="Adicionar amigo" onFechar={() => setAdicionando(false)}>
-          <AdicionarForm onEnviar={adicionar} onCancelar={() => setAdicionando(false)} />
-        </Modal>
-      )}
-
-      {removendo && (
-        <ConfirmDialog
-          titulo="Desfazer amizade"
-          mensagem={`Remover ${nomeDe(removendo.usuario)} dos seus amigos? Os treinos que você já copiou continuam com você.`}
-          textoConfirmar="Remover"
-          onConfirmar={confirmarRemocao}
-          onCancelar={() => setRemovendo(null)}
-        />
       )}
     </>
   );

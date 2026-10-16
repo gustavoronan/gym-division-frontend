@@ -1,5 +1,8 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../components/Auth/authContext";
+import ConquistasModal from "../../components/Conquistas/ConquistasModal";
+import ResumoMesModal from "../../components/ResumoMes/ResumoMesModal";
 import { useToast } from "../../components/Toast/toastContext";
 import { authApi } from "../../services/api";
 
@@ -12,6 +15,8 @@ export default function Perfil() {
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [salvando, setSalvando] = useState(false);
+  const [modalConquistas, setModalConquistas] = useState(false);
+  const [modalResumoMes, setModalResumoMes] = useState(false);
 
   const trocandoSenha = novaSenha !== "";
   const valido =
@@ -51,6 +56,53 @@ export default function Perfil() {
           <p>@{usuario.username}</p>
         </div>
       </header>
+
+      <Link to="/historico" className="card link-historico-perfil">
+        <div className="link-historico-perfil__info">
+          <span className="link-historico-perfil__icone">
+            <i className="bi bi-clock-history" />
+          </span>
+          <div>
+            <strong>Histórico & Recordes</strong>
+            <span>Veja sua sequência de dias e evolução de carga</span>
+          </div>
+        </div>
+        <i className="bi bi-chevron-right" />
+      </Link>
+
+      <button
+        type="button"
+        className="card link-historico-perfil"
+        onClick={() => setModalConquistas(true)}
+      >
+        <div className="link-historico-perfil__info">
+          <span className="link-historico-perfil__icone" style={{ background: "rgba(250, 204, 21, 0.15)", color: "#facc15" }}>
+            🏆
+          </span>
+          <div>
+            <strong>Conquistas & Medalhas</strong>
+            <span>Desbloqueie marcos, streaks e recordes</span>
+          </div>
+        </div>
+        <i className="bi bi-chevron-right" />
+      </button>
+
+      <button
+        type="button"
+        className="card link-historico-perfil"
+        onClick={() => setModalResumoMes(true)}
+      >
+        <div className="link-historico-perfil__info">
+          <span className="link-historico-perfil__icone" style={{ background: "rgba(236, 72, 153, 0.15)", color: "#ec4899" }}>
+            📸
+          </span>
+          <div>
+            <strong>Resumo do Mês</strong>
+            <span>Gere seu card de Stories para o Instagram</span>
+          </div>
+        </div>
+        <i className="bi bi-chevron-right" />
+      </button>
 
       <form className="card perfil form" onSubmit={salvar}>
         <label className="field">
@@ -104,6 +156,20 @@ export default function Perfil() {
       <button className="btn btn--ghost btn--block" onClick={sair}>
         <i className="bi bi-box-arrow-right" /> Sair
       </button>
+
+      {modalConquistas && (
+        <ConquistasModal
+          aberto={modalConquistas}
+          onFechar={() => setModalConquistas(false)}
+        />
+      )}
+
+      {modalResumoMes && (
+        <ResumoMesModal
+          aberto={modalResumoMes}
+          onFechar={() => setModalResumoMes(false)}
+        />
+      )}
     </>
   );
 }

@@ -1,5 +1,23 @@
-import type { Exercicio, ExercicioInput } from "../types/exercicio";
-import type { Amigos, Amizade, TreinosDoAmigo } from "../types/social";
+import type {
+  ConcluirSessaoInput,
+  ConquistasResponse,
+  EstatisticasHistorico,
+  Exercicio,
+  ExercicioInput,
+  ResumoCarga,
+  ResumoMes,
+  SessaoTreino,
+} from "../types/exercicio";
+import type {
+  Amigos,
+  Amizade,
+  Desafio,
+  DesafioProgresso,
+  FeedItem,
+  RankingSemanal,
+  TreinoCompartilhado,
+  TreinosDoAmigo,
+} from "../types/social";
 import type { Treino, TreinoInput } from "../types/treino";
 import type { Usuario, UsuarioInput } from "../types/usuario";
 import { EVENTO_SESSAO_EXPIRADA, sessao } from "./sessao";
@@ -169,6 +187,33 @@ export const treinosApi = {
       body: JSON.stringify({ substituir }),
     });
   },
+
+  sugestaoHoje(dia?: number) {
+    const q = dia !== undefined ? `?dia=${dia}` : "";
+    return request<{
+      dia_semana: number;
+      nome_dia: string;
+      sugerido: Treino | null;
+      total_treinos: number;
+    }>(`/treinos/sugerido/${q}`);
+  },
+
+  compartilhar(id: number) {
+    return request<{ treino_id: number; nome: string; codigo: string }>(
+      `/treinos/${id}/compartilhar/`,
+      { method: "POST" },
+    );
+  },
+
+  obterCompartilhado(codigo: string) {
+    return request<TreinoCompartilhado>(`/treinos/compartilhado/${codigo}/`);
+  },
+
+  importarCompartilhado(codigo: string) {
+    return request<Treino>(`/treinos/compartilhado/${codigo}/importar/`, {
+      method: "POST",
+    });
+  },
 };
 
 export const amigosApi = {
@@ -213,3 +258,107 @@ export const notificacoesApi = {
     return request<{ pedidos_amizade: Amizade[] }>("/notificacoes/");
   },
 };
+
+export const sessoesApi = {
+  listar() {
+    return request<SessaoTreino[]>("/sessoes/");
+  },
+
+  detalhes(id: number) {
+    return request<SessaoTreino>(`/sessoes/${id}/`);
+  },
+
+  concluir(dados: ConcluirSessaoInput) {
+    return request<SessaoTreino>("/sessoes/", {
+      method: "POST",
+      body: JSON.stringify(dados),
+    });
+  },
+
+  excluir(id: number) {
+    return request<void>(`/sessoes/${id}/`, { method: "DELETE" });
+  },
+
+  estatisticas(hoje?: string) {
+    const q = hoje ? `?hoje=${hoje}` : "";
+    return request<EstatisticasHistorico>(`/sessoes/estatisticas/${q}`);
+  },
+
+  ultimasCargas() {
+    return request<Record<string, ResumoCarga>>("/sessoes/ultimas-cargas/");
+  },
+
+  resumoMes(ano?: number, mes?: number) {
+    const params = new URLSearchParams();
+    if (ano) params.append("ano", String(ano));
+    if (mes) params.append("mes", String(mes));
+    const q = params.toString() ? `?${params.toString()}` : "";
+    return request<ResumoMes>(`/sessoes/resumo-mes/${q}`);
+  },
+};
+
+export const conquistasApi = {
+  listar() {
+    return request<ConquistasResponse>("/conquistas/");
+  },
+};
+
+export const feedApi = {
+  listar() {
+    return request<FeedItem[]>("/feed/");
+  },
+
+  reagir(sessaoId: number, emoji: string) {
+    return request<{
+      sessao_id: number;
+      reagiu: boolean;
+      emoji: string;
+      reacoes: Record<string, number>;
+      minhas_reacoes: string[];
+    }>(`/sessoes/${sessaoId}/reagir/`, {
+      method: "POST",
+      body: JSON.stringify({ emoji }),
+    });
+  },
+};
+
+export const rankingApi = {
+  semanal(criterio: "dias" | "volume" = "dias", hoje?: string) {
+    const params = new URLSearchParams();
+    if (criterio) params.append("criterio", criterio);
+    if (hoje) params.append("hoje", hoje);
+    const q = params.toString() ? `?${params.toString()}` : "";
+    return request<RankingSemanal>(`/ranking/semanal/${q}`);
+  },
+};
+
+export const desafiosApi = {
+  listar() {
+    return request<Desafio[]>("/desafios/");
+  },
+
+  criar(dados: {
+    titulo: string;
+    descricao?: string;
+    meta_treinos?: number;
+    dias_duracao?: number;
+    icone?: string;
+  }) {
+    return request<Desafio>("/desafios/", {
+      method: "POST",
+      body: JSON.stringify(dados),
+    });
+  },
+
+  participar(id: number, sair = false) {
+    return request<{
+      participando: boolean;
+      mensagem: string;
+      meu_progresso?: DesafioProgresso;
+    }>(`/desafios/${id}/participar/`, {
+      method: "POST",
+      body: JSON.stringify({ sair }),
+    });
+  },
+};
+

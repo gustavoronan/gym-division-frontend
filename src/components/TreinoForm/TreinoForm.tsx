@@ -17,6 +17,7 @@ interface Linha {
   nome: string;
   series: string;
   repeticoes: string;
+  carga: string;
   exercicioRef: string;
 }
 
@@ -27,6 +28,7 @@ const novaLinha = (item?: ExercicioInput): Linha => ({
   nome: item?.nome ?? "",
   series: String(item?.series ?? 3),
   repeticoes: item?.repeticoes ?? "",
+  carga: item?.carga !== null && item?.carga !== undefined ? String(item.carga) : "",
   exercicioRef: item?.exercicio_ref ?? "",
 });
 
@@ -34,6 +36,16 @@ const seriesValidas = (texto: string) => {
   const n = Number(texto);
   return Number.isInteger(n) && n >= 1 && n <= 20;
 };
+
+const DIAS_SEMANA = [
+  { id: 1, rotulo: "Seg" },
+  { id: 2, rotulo: "Ter" },
+  { id: 3, rotulo: "Qua" },
+  { id: 4, rotulo: "Qui" },
+  { id: 5, rotulo: "Sex" },
+  { id: 6, rotulo: "Sáb" },
+  { id: 0, rotulo: "Dom" },
+];
 
 export default function TreinoForm({
   inicial,
@@ -43,10 +55,17 @@ export default function TreinoForm({
   onCancelar,
 }: Props) {
   const [nome, setNome] = useState(inicial?.nome ?? "");
+  const [diasSemana, setDiasSemana] = useState<number[]>(() => inicial?.dias_semana ?? []);
   const [linhas, setLinhas] = useState<Linha[]>(() =>
     inicial?.itens.length ? inicial.itens.map((i) => novaLinha(i)) : [novaLinha()],
   );
   const [salvando, setSalvando] = useState(false);
+
+  const alternarDia = (diaId: number) => {
+    setDiasSemana((atuais) =>
+      atuais.includes(diaId) ? atuais.filter((d) => d !== diaId) : [...atuais, diaId],
+    );
+  };
 
   const atualizar = (chave: number, campo: keyof Linha, valor: string) =>
     setLinhas((ls) => ls.map((l) => (l.chave === chave ? { ...l, [campo]: valor } : l)));
@@ -74,10 +93,12 @@ export default function TreinoForm({
     try {
       await onSalvar({
         nome: nome.trim(),
+        dias_semana: diasSemana,
         itens: linhas.map((l) => ({
           nome: l.nome.trim(),
           series: Number(l.series),
           repeticoes: l.repeticoes.trim(),
+          carga: l.carga.trim() !== "" ? Number(l.carga) : null,
           exercicio_ref: l.exercicioRef,
         })),
       });
@@ -98,6 +119,29 @@ export default function TreinoForm({
           onChange={(e) => setNome(e.target.value)}
         />
       </label>
+
+      <div className="field">
+        <span>Dias sugeridos (planejamento semanal)</span>
+        <div className="dias-seletor" role="group" aria-label="Dias sugeridos para este treino">
+          {DIAS_SEMANA.map((dia) => {
+            const selecionado = diasSemana.includes(dia.id);
+            return (
+              <button
+                key={dia.id}
+                type="button"
+                className={`dia-chip ${selecionado ? "dia-chip--ativo" : ""}`}
+                onClick={() => alternarDia(dia.id)}
+                aria-pressed={selecionado}
+              >
+                {dia.rotulo}
+              </button>
+            );
+          })}
+        </div>
+        <small className="form-dica">
+          💡 Sugestão flexível: se houver imprevistos, você pode trocar ou fazer qualquer treino no dia que preferir.
+        </small>
+      </div>
 
       <div className="field">
         <span>Exercícios ({linhas.length})</span>
@@ -126,6 +170,7 @@ export default function TreinoForm({
                   min={1}
                   max={20}
                   value={l.series}
+                  title="Séries"
                   aria-label={`Séries do exercício ${i + 1}`}
                   onChange={(e) => atualizar(l.chave, "series", e.target.value)}
                 />
@@ -134,8 +179,21 @@ export default function TreinoForm({
                   value={l.repeticoes}
                   maxLength={50}
                   placeholder="8-12"
+                  title="Repetições"
                   aria-label={`Repetições do exercício ${i + 1}`}
                   onChange={(e) => atualizar(l.chave, "repeticoes", e.target.value)}
+                />
+                <input
+                  type="number"
+                  step="0.5"
+                  min={0}
+                  max={999}
+                  value={l.carga}
+                  placeholder="kg"
+                  title="Carga sugerida (kg)"
+                  aria-label={`Carga sugerida (kg) do exercício ${i + 1}`}
+                  className="linha__carga"
+                  onChange={(e) => atualizar(l.chave, "carga", e.target.value)}
                 />
                 <button
                   type="button"

@@ -1261,3 +1261,1929 @@ button:disabled {
   line-height: 18px;
   text-align: center;
 }
+
+/* ---------- Planejamento Semanal & Dias ---------- */
+
+.dias-seletor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.dia-chip {
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.15s ease;
+}
+
+.dia-chip:hover {
+  color: var(--text);
+  border-color: #3e475e;
+}
+
+.dia-chip--ativo {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.form-dica {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  margin-top: 4px;
+}
+
+.linha__carga {
+  width: 68px !important;
+  flex: none !important;
+  text-align: center;
+}
+
+.treino__dias-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.treino__dias-badge i {
+  color: var(--accent);
+}
+
+.treino__titulo-linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Banner de sugestão inteligente do dia */
+.banner-sugestao {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(196, 255, 61, 0.08), var(--surface) 80%);
+  border: 1px solid rgba(196, 255, 61, 0.3);
+}
+
+.banner-sugestao__icone {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.25rem;
+}
+
+.banner-sugestao__conteudo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.banner-sugestao__tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.banner-sugestao__conteudo strong {
+  font-size: 1.15rem;
+}
+
+.banner-sugestao__conteudo p {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 2px 0 10px;
+}
+
+.banner-sugestao__acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Header & Cronômetro & Descanso */
+.header-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cronometro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-family: monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.icon-btn--ativo {
+  color: var(--accent);
+  background: var(--accent-soft);
+  position: relative;
+}
+
+.descanso-contador {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.btn--finalizar {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+/* Exercício Ativo com Séries */
+.exercicio-sessao {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.exercicio-sessao__topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+}
+
+.check-botao {
+  flex: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.check-botao--feito .check__caixa {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.exercicio-sessao__info {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.exercicio-sessao__info strong {
+  display: block;
+  font-size: 1.02rem;
+  margin-bottom: 4px;
+}
+
+.texto--riscado {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.exercicio-sessao__metas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.tag-carga {
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.tag-historico {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.tag-recorde {
+  color: var(--accent);
+  font-weight: 600;
+  background: var(--accent-soft);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.exercicio-sessao__acoes-lado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-btn--sm {
+  width: 32px;
+  height: 32px;
+}
+
+/* Painel de Séries Detalhadas */
+.exercicio-sessao__series {
+  padding: 8px 14px 14px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+}
+
+.series-cabecalho {
+  display: grid;
+  grid-template-columns: 36px 1fr 1fr 40px;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 4px 6px;
+}
+
+.series-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.serie-linha {
+  display: grid;
+  grid-template-columns: 36px 1fr 1fr 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.serie-linha--feita {
+  border-color: rgba(196, 255, 61, 0.35);
+  background: rgba(196, 255, 61, 0.03);
+}
+
+.serie-num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+}
+
+.serie-linha input {
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.serie-linha input:focus {
+  border-color: var(--accent);
+  outline: 0;
+}
+
+.serie-check {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #3a4258;
+  background: none;
+  display: grid;
+  place-items: center;
+  color: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.serie-check--feita {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.sessao-rodape-acoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Modal Finalizar */
+.modal-finalizar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-finalizar__msg {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.modal-finalizar__resumo-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.resumo-box__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.resumo-box__item i {
+  font-size: 1.4rem;
+  color: var(--accent);
+}
+
+.resumo-box__item strong {
+  display: block;
+  font-size: 1.1rem;
+}
+
+.resumo-box__item span {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Descanso Modal */
+.descanso-ativo {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.descanso-tempo {
+  display: block;
+  font-size: 3.5rem;
+  font-weight: 900;
+  font-family: monospace;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.descanso-botoes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.descanso-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.descanso-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Histórico & Métricas */
+.historico-metricas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metrica-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+}
+
+.metrica-card--streak {
+  border-color: rgba(255, 120, 40, 0.4);
+  background: linear-gradient(135deg, rgba(255, 100, 30, 0.08), var(--surface) 80%);
+}
+
+.metrica-card__icone {
+  font-size: 1.8rem;
+}
+
+.metrica-card__info strong {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.metrica-card__info span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.recordes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.recorde-item {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recorde-item__nome {
+  font-size: 0.82rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recorde-item__carga {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.sessao-historico {
+  overflow: hidden;
+}
+
+.sessao-historico__topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  cursor: pointer;
+}
+
+.sessao-historico__icone {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.15rem;
+}
+
+.sessao-historico__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sessao-historico__linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.sessao-historico__linha strong {
+  font-size: 1.05rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sessao-historico__data {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  flex: none;
+}
+
+.sessao-historico__resumo {
+  display: flex;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.sessao-historico__detalhes {
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sessao-historico__exercicios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sessao-historico__ex-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sessao-historico__ex-nome {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sessao-historico__ex-nome em {
+  font-size: 0.78rem;
+  font-style: normal;
+  color: var(--muted);
+}
+
+.sessao-historico__series-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.serie-tag {
+  font-size: 0.72rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--text);
+}
+
+.sessao-historico__acoes {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Link Histórico em Perfil */
+.link-historico-perfil {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 6px;
+  transition: border-color 0.15s;
+}
+
+.link-historico-perfil:hover {
+  border-color: var(--accent);
+}
+
+.link-historico-perfil__info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.link-historico-perfil__icone {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+
+.link-historico-perfil__info strong {
+  display: block;
+  font-size: 0.98rem;
+}
+
+.link-historico-perfil__info span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ========================================================
+   REDE SOCIAL: ABAS, FEED, RANKING, DESAFIOS E COMPARTILHAR
+   ======================================================== */
+
+/* Abas de navegação social */
+.abas-sociais-nav {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.aba-social-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.aba-social-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.aba-social-btn--ativo {
+  background: var(--accent);
+  color: var(--accent-ink) !important;
+}
+
+.aba-social-badge {
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 2px;
+}
+
+/* ---------- Feed de amigos ---------- */
+.feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feed-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feed-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.feed-item__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.feed-item__avatar {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, #10b981 100%);
+  color: #0b0d12;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(196, 255, 61, 0.2);
+}
+
+.feed-item__meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feed-item__autor-linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feed-item__autor-linha strong {
+  font-size: 0.98rem;
+}
+
+.feed-item__subtitulo {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.feed-item__subtitulo strong {
+  color: var(--accent);
+}
+
+.feed-item__tempo {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.feed-item__exercicios {
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.feed-item__exercicios-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.feed-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+
+.feed-tag strong {
+  font-weight: 600;
+}
+
+.feed-tag__carga {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.feed-tag--mais {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.feed-item__reacoes-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.feed-item__botoes-reacao {
+  display: flex;
+  gap: 6px;
+}
+
+.feed-reacao-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.85rem;
+}
+
+.feed-reacao-btn:hover {
+  border-color: #4a5568;
+  transform: translateY(-1px);
+}
+
+.feed-reacao-btn--ativo {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.feed-reacao-btn__emoji {
+  font-size: 1rem;
+}
+
+.feed-reacao-btn__contador {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.feed-item__quem-reagiu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.feed-item__reacao-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: var(--surface-2);
+  border-radius: 6px;
+}
+
+/* ---------- Ranking semanal ---------- */
+.ranking-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ranking-seletor {
+  display: flex;
+  gap: 8px;
+}
+
+.ranking-periodo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 6px 12px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  align-self: flex-start;
+}
+
+.ranking-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ranking-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  transition: all 0.15s ease;
+}
+
+.ranking-card--voce {
+  border-color: rgba(196, 255, 61, 0.4);
+  background: linear-gradient(135deg, rgba(196, 255, 61, 0.05), var(--surface) 80%);
+}
+
+.ranking-card--lider {
+  border-color: rgba(250, 204, 21, 0.4);
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.08), var(--surface) 80%);
+}
+
+.ranking-card__posicao {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+
+.ranking-card__medalha {
+  font-size: 1.6rem;
+}
+
+.ranking-card__numero {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.ranking-card__conteudo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ranking-card__usuario-linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ranking-card__nome {
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-card__metricas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ranking-card__destaque {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.ranking-card__destaque strong {
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+.ranking-card__detalhes {
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------- Desafios ---------- */
+.desafios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.desafios-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.desafios-intro {
+  flex: 1;
+  min-width: 200px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.desafios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.desafio-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.desafio-card__topo {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.desafio-card__icone-caixa {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+}
+
+.desafio-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.desafio-card__titulo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.desafio-card__descricao {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.desafio-card__meta-tag {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 4px;
+}
+
+.desafio-card__meu-progresso {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.desafio-card__progresso-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.desafio-card__porcentagem {
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.barra-progresso {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.barra-progresso__preenchimento {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.barra-progresso__preenchimento--completo {
+  background: #10b981;
+}
+
+.desafio-card__progresso-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.desafio-card__tempo-restante {
+  color: var(--muted);
+}
+
+.desafio-card__participantes-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.desafio-card__participantes-titulo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.desafio-participantes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.desafio-participante-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.desafio-participante-item__nome-linha {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.mini-barra {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.mini-barra__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.mini-barra__fill--completo {
+  background: #10b981;
+}
+
+.desafio-card__acoes {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icones-seletor {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.icone-opcao {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s ease;
+}
+
+.icone-opcao--selecionado {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* ---------- Modal de QR Code / Compartilhar ---------- */
+.compartilhar-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+.compartilhar-modal__subtitulo {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.compartilhar-modal__qr-container {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  width: fit-content;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.compartilhar-modal__qr {
+  display: block;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+}
+
+.compartilhar-modal__qr-placeholder {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #334155;
+}
+
+.compartilhar-modal__codigo-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.compartilhar-modal__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.compartilhar-modal__codigo {
+  font-family: monospace;
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.compartilhar-modal__link-box {
+  display: flex;
+  gap: 8px;
+}
+
+.compartilhar-modal__input {
+  flex: 1;
+  font-size: 0.82rem;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compartilhar-modal__acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.compartilhar-modal__acoes .btn {
+  flex: 1;
+}
+
+/* ---------- Página Pública de Treino Compartilhado ---------- */
+.treino-publico-container {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+.treino-publico__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.treino-publico__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+.treino-publico__conteudo {
+  display: flex;
+  flex-direction: column;
+}
+
+.treino-publico__card {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.treino-publico__topo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.treino-publico__badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.treino-publico__titulo {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin: 4px 0 0;
+  letter-spacing: -0.02em;
+}
+
+.treino-publico__autor {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.treino-publico__username {
+  color: var(--muted);
+  margin-left: 6px;
+  font-size: 0.85rem;
+}
+
+.treino-publico__dias {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.treino-publico__dias-rotulo {
+  font-size: 0.82rem;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dias-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.dias-chips__item {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.treino-publico__exercicios-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.treino-publico__exercicios-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.treino-publico__exercicios-header h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.treino-publico__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.treino-publico__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.treino-publico__item-ordem {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+.treino-publico__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.treino-publico__item-info strong {
+  font-size: 0.95rem;
+}
+
+.treino-publico__item-detalhes {
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  gap: 6px;
+}
+
+.treino-publico__acao-box {
+  margin-top: 8px;
+}
+
+.treino-publico__convite-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  padding: 16px;
+  background: var(--surface-2);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.treino-publico__convite-login p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* ========================================================
+   ATALHOS DO HISTÓRICO, CONQUISTAS E RESUMO DO MÊS
+   ======================================================== */
+
+.historico-atalhos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.atalho-historico-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.atalho-historico-btn:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  transform: translateY(-1px);
+}
+
+.atalho-historico-btn__icone {
+  font-size: 1.6rem;
+  flex: none;
+}
+
+.atalho-historico-btn__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.atalho-historico-btn__info strong {
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atalho-historico-btn__info span {
+  font-size: 0.75rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atalho-historico-btn > i {
+  color: var(--muted);
+  flex: none;
+}
+
+/* ---------- Conquistas & Medalhas Modal ---------- */
+.conquistas-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.conquistas-resumo {
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.conquistas-resumo__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.conquistas-resumo__contador {
+  display: block;
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+.conquistas-resumo__rotulo {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.conquistas-resumo__porcentagem {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.conquistas-filtros {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.conquista-filtro-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.conquista-filtro-btn:hover {
+  color: var(--text);
+  border-color: #4a5568;
+}
+
+.conquista-filtro-btn--ativo {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.conquistas-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.conquista-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: all 0.15s ease;
+}
+
+.conquista-card--desbloqueada {
+  border-color: rgba(196, 255, 61, 0.4);
+  background: linear-gradient(135deg, rgba(196, 255, 61, 0.05), var(--surface-2) 80%);
+}
+
+.conquista-card--bloqueada {
+  opacity: 0.75;
+}
+
+.conquista-card__icone-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.conquista-card__icone {
+  font-size: 1.4rem;
+}
+
+.conquista-card__cadeado {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: #94a3b8;
+  display: grid;
+  place-items: center;
+  font-size: 0.65rem;
+  border: 1px solid #334155;
+}
+
+.conquista-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.conquista-card__titulo-linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.conquista-card__titulo {
+  font-size: 0.95rem;
+}
+
+.conquista-card__descricao {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.conquista-card__progresso-box {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.conquista-card__progresso-texto {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* ---------- Resumo do Mês (Stories) Modal ---------- */
+.resumo-mes-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resumo-mes-seletor {
+  display: flex;
+  flex-direction: column;
+}
+
+.resumo-story-moldura {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+/* Card 9:16 Estilo Instagram Stories */
+.resumo-story-card {
+  width: 100%;
+  max-width: 330px;
+  aspect-ratio: 9 / 16;
+  background: linear-gradient(165deg, #090d16 0%, #0d1220 50%, #161f33 100%);
+  border: 2px solid rgba(196, 255, 61, 0.35);
+  border-radius: 20px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f8fafc;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(196, 255, 61, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.resumo-story-card::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 255, 61, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.resumo-story-card::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  left: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.resumo-story__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+
+.resumo-story__marca {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.resumo-story__tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resumo-story__periodo-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 10px 0 6px;
+  z-index: 1;
+}
+
+.resumo-story__mes {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.resumo-story__user {
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.resumo-story__grid-metricas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 8px 0;
+  z-index: 1;
+}
+
+.resumo-story__metrica-card {
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+
+.resumo-story__metrica-icone {
+  font-size: 1.25rem;
+}
+
+.resumo-story__metrica-valor {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.resumo-story__metrica-rotulo {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.resumo-story__destaque-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  z-index: 1;
+}
+
+.resumo-story__destaque-box--pr {
+  border-color: rgba(196, 255, 61, 0.3);
+  background: rgba(196, 255, 61, 0.04);
+}
+
+.resumo-story__destaque-icone {
+  font-size: 1.4rem;
+  flex: none;
+}
+
+.resumo-story__destaque-texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.resumo-story__destaque-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.resumo-story__destaque-titulo {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resumo-story__destaque-detalhe {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.resumo-story__footer {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding-top: 6px;
+  z-index: 1;
+}
+
+.resumo-mes-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+

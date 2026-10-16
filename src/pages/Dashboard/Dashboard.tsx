@@ -134,7 +134,8 @@ export default function Dashboard() {
               <div className="exercicio__info">
                 <strong>{exercicio.nome}</strong>
                 <span>
-                  {exercicio.series} × {exercicio.repeticoes} ·{" "}
+                  {exercicio.series} × {exercicio.repeticoes}
+                  {exercicio.carga ? ` · ${exercicio.carga} kg` : ""} ·{" "}
                   {formatarDataCurta(exercicio.data)}
                 </span>
               </div>
