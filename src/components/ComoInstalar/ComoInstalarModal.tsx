@@ -7,9 +7,16 @@ interface Props {
 }
 
 export default function ComoInstalarModal({ aberto, onFechar }: Props) {
-  const [aba, setAba] = useState<"pc" | "celular">("pc");
+  // Por regra, a primeira opção que aparece para o usuário é Celular
+  const [aba, setAba] = useState<"celular" | "pc">("celular");
   // Captura o evento nativo de instalação do PWA caso o navegador suporte
   const [promptInstalacao, setPromptInstalacao] = useState<any>(null);
+
+  useEffect(() => {
+    if (aberto) {
+      setAba("celular");
+    }
+  }, [aberto]);
 
   useEffect(() => {
     const aoCapturarPrompt = (e: Event) => {
@@ -34,17 +41,8 @@ export default function ComoInstalarModal({ aberto, onFechar }: Props) {
   return (
     <Modal titulo="Como Instalar o Division" onFechar={onFechar} centralizado>
       <div className="como-instalar-modal">
-        {/* Seletor de Plataforma */}
+        {/* Seletor de Plataforma: Celular primeiro por regra */}
         <div className="resumo-story-abas" role="tablist" aria-label="Plataforma de instalação">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={aba === "pc"}
-            className={`resumo-story-aba ${aba === "pc" ? "resumo-story-aba--ativa" : ""}`}
-            onClick={() => setAba("pc")}
-          >
-            <i className="bi bi-display" /> Área de Trabalho (PC)
-          </button>
           <button
             type="button"
             role="tab"
@@ -53,6 +51,15 @@ export default function ComoInstalarModal({ aberto, onFechar }: Props) {
             onClick={() => setAba("celular")}
           >
             <i className="bi bi-phone" /> Celular (Android / iOS)
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={aba === "pc"}
+            className={`resumo-story-aba ${aba === "pc" ? "resumo-story-aba--ativa" : ""}`}
+            onClick={() => setAba("pc")}
+          >
+            <i className="bi bi-display" /> Área de Trabalho (PC)
           </button>
         </div>
 
@@ -68,12 +75,68 @@ export default function ComoInstalarModal({ aberto, onFechar }: Props) {
               className="btn btn--primary btn--block"
               onClick={acionarInstalacaoNativa}
             >
-              <i className="bi bi-download" /> Instalar agora na Área de Trabalho
+              <i className="bi bi-download" /> Instalar aplicativo agora
             </button>
           </div>
         )}
 
-        {aba === "pc" ? (
+        {aba === "celular" ? (
+          <div className="tutorial-lista">
+            <div className="tutorial-card">
+              <div className="tutorial-card__topo">
+                <span className="tutorial-card__badge">Android</span>
+                <strong>Google Chrome</strong>
+              </div>
+              <ol className="tutorial-passos">
+                <li>
+                  <span className="passo-num">1</span>
+                  <span>
+                    Toque no menu de <strong>três pontinhos (⋮)</strong> no canto superior direito do Chrome.
+                  </span>
+                </li>
+                <li>
+                  <span className="passo-num">2</span>
+                  <span>
+                    Selecione <strong>“Instalar aplicativo”</strong> ou <strong>“Adicionar à tela inicial”</strong>.
+                  </span>
+                </li>
+                <li>
+                  <span className="passo-num">3</span>
+                  <span>
+                    Toque em <strong>“Instalar”</strong>. O ícone aparecerá na tela do seu celular e abrirá em tela cheia!
+                  </span>
+                </li>
+              </ol>
+            </div>
+
+            <div className="tutorial-card">
+              <div className="tutorial-card__topo">
+                <span className="tutorial-card__badge">iPhone / iPad</span>
+                <strong>Safari (iOS)</strong>
+              </div>
+              <ol className="tutorial-passos">
+                <li>
+                  <span className="passo-num">1</span>
+                  <span>
+                    No Safari, toque no botão de <strong>Compartilhar</strong> (quadrado com seta apontando para cima na barra inferior).
+                  </span>
+                </li>
+                <li>
+                  <span className="passo-num">2</span>
+                  <span>
+                    Role para baixo e selecione <strong>“Adicionar à Tela de Início”</strong>.
+                  </span>
+                </li>
+                <li>
+                  <span className="passo-num">3</span>
+                  <span>
+                    Toque em <strong>“Adicionar”</strong> no canto superior direito.
+                  </span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        ) : (
           <div className="tutorial-lista">
             <div className="tutorial-card">
               <div className="tutorial-card__topo">
@@ -140,62 +203,6 @@ export default function ComoInstalarModal({ aberto, onFechar }: Props) {
               <span>
                 <strong>Vantagem do app na Área de Trabalho:</strong> Abre em janela independente sem abas do navegador, economiza memória e permite acesso instantâneo ao seu treino diário.
               </span>
-            </div>
-          </div>
-        ) : (
-          <div className="tutorial-lista">
-            <div className="tutorial-card">
-              <div className="tutorial-card__topo">
-                <span className="tutorial-card__badge">Android</span>
-                <strong>Google Chrome</strong>
-              </div>
-              <ol className="tutorial-passos">
-                <li>
-                  <span className="passo-num">1</span>
-                  <span>
-                    Toque no menu de <strong>três pontinhos (⋮)</strong> no canto superior direito do Chrome.
-                  </span>
-                </li>
-                <li>
-                  <span className="passo-num">2</span>
-                  <span>
-                    Selecione <strong>“Instalar aplicativo”</strong> ou <strong>“Adicionar à tela inicial”</strong>.
-                  </span>
-                </li>
-                <li>
-                  <span className="passo-num">3</span>
-                  <span>
-                    Toque em <strong>“Instalar”</strong>. O ícone aparecerá na tela do seu celular e abrirá em tela cheia!
-                  </span>
-                </li>
-              </ol>
-            </div>
-
-            <div className="tutorial-card">
-              <div className="tutorial-card__topo">
-                <span className="tutorial-card__badge">iPhone / iPad</span>
-                <strong>Safari (iOS)</strong>
-              </div>
-              <ol className="tutorial-passos">
-                <li>
-                  <span className="passo-num">1</span>
-                  <span>
-                    No Safari, toque no botão de <strong>Compartilhar</strong> (quadrado com seta apontando para cima na barra inferior).
-                  </span>
-                </li>
-                <li>
-                  <span className="passo-num">2</span>
-                  <span>
-                    Role para baixo e selecione <strong>“Adicionar à Tela de Início”</strong>.
-                  </span>
-                </li>
-                <li>
-                  <span className="passo-num">3</span>
-                  <span>
-                    Toque em <strong>“Adicionar”</strong> no canto superior direito.
-                  </span>
-                </li>
-              </ol>
             </div>
           </div>
         )}

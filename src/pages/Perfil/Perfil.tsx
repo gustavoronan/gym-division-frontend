@@ -113,11 +113,11 @@ export default function Perfil() {
       >
         <div className="link-historico-perfil__info">
           <span className="link-historico-perfil__icone" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}>
-            💻
+            📱
           </span>
           <div>
             <strong>Como Instalar o App</strong>
-            <span>Instale na Área de Trabalho do PC ou no celular</span>
+            <span>Instale no celular ou na Área de Trabalho do PC</span>
           </div>
         </div>
         <i className="bi bi-chevron-right" />
