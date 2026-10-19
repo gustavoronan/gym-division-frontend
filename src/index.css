@@ -1704,15 +1704,18 @@ button:disabled {
 /* Histórico & Métricas */
 .historico-metricas {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  width: 100%;
 }
 
 .metrica-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px;
+  padding: 12px 14px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .metrica-card--streak {
@@ -1721,24 +1724,44 @@ button:disabled {
 }
 
 .metrica-card__icone {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+  flex: none;
+}
+
+.metrica-card__info {
+  min-width: 0;
+  flex: 1;
 }
 
 .metrica-card__info strong {
   display: block;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .metrica-card__info span {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+@media (max-width: 360px) {
+  .historico-metricas {
+    grid-template-columns: 1fr;
+  }
 }
 
 .recordes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr));
   gap: 10px;
+  width: 100%;
 }
 
 .recorde-item {
@@ -1746,6 +1769,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .recorde-item__nome {
@@ -1754,16 +1779,22 @@ button:disabled {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .recorde-item__carga {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sessao-historico {
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .sessao-historico__topo {
@@ -1772,6 +1803,7 @@ button:disabled {
   gap: 12px;
   padding: 14px;
   cursor: pointer;
+  min-width: 0;
 }
 
 .sessao-historico__icone {
@@ -1796,9 +1828,12 @@ button:disabled {
   justify-content: space-between;
   align-items: baseline;
   gap: 8px;
+  min-width: 0;
 }
 
 .sessao-historico__linha strong {
+  flex: 1;
+  min-width: 0;
   font-size: 1.05rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1806,18 +1841,38 @@ button:disabled {
 }
 
 .sessao-historico__data {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--muted);
   flex: none;
+  white-space: nowrap;
 }
 
 .sessao-historico__resumo {
   display: flex;
-  gap: 12px;
-  font-size: 0.8rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  font-size: 0.78rem;
   color: var(--muted);
-  margin-top: 2px;
+  margin-top: 3px;
+  min-width: 0;
+}
+
+.sessao-historico__resumo span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.sessao-historico__seta {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-left: 2px;
 }
 
 .sessao-historico__detalhes {
@@ -1827,37 +1882,53 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
+  width: 100%;
 }
 
 .sessao-historico__exercicios {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .sessao-historico__ex-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .sessao-historico__ex-nome {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.88rem;
   font-weight: 600;
+  min-width: 0;
+}
+
+.sessao-historico__ex-nome span {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .sessao-historico__ex-nome em {
-  font-size: 0.78rem;
+  flex: none;
+  font-size: 0.75rem;
   font-style: normal;
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .sessao-historico__series-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  min-width: 0;
 }
 
 .serie-tag {
@@ -1867,6 +1938,8 @@ button:disabled {
   padding: 2px 8px;
   border-radius: 6px;
   color: var(--text);
+  max-width: 100%;
+  word-break: break-word;
 }
 
 .sessao-historico__acoes {
@@ -2765,8 +2838,15 @@ button:disabled {
 
 .historico-atalhos-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .historico-atalhos-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .atalho-historico-btn {
@@ -2780,6 +2860,8 @@ button:disabled {
   cursor: pointer;
   transition: all 0.15s ease;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .atalho-historico-btn:hover {
@@ -2818,6 +2900,8 @@ button:disabled {
 .atalho-historico-btn > i {
   color: var(--muted);
   flex: none;
+  font-size: 0.85rem;
+  margin-left: 2px;
 }
 
 /* ---------- Conquistas & Medalhas Modal ---------- */
@@ -3539,6 +3623,56 @@ button:disabled {
   .treino-previa__rodape {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+/* ========================================================
+   CORREÇÃO DE OVERFLOW E RESPONSIVIDADE MOBILE (HISTÓRICO E GERAL)
+   ======================================================== */
+
+html,
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+.app {
+  width: 100% !important;
+  max-width: 560px !important;
+  margin: 0 auto !important;
+  overflow-x: hidden !important;
+}
+
+.app__conteudo {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.page-header {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.page-header > div {
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.page-header h1 {
+  font-size: 1.6rem !important;
+  word-break: break-word !important;
+}
+
+@media (max-width: 420px) {
+  .page-header {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
   }
 }
 
