@@ -15,6 +15,8 @@ interface Props {
 
 // Campo de nome com sugestões do catálogo. Digitar livremente continua permitido:
 // o vínculo com o GIF só existe se a pessoa escolher uma sugestão.
+// Se a pessoa não encontrar ou desejar criar um exercício personalizado sem GIF,
+// opções claras são disponibilizadas no dropdown.
 export default function BuscaExercicio({
   valor,
   exercicioRef,
@@ -32,6 +34,8 @@ export default function BuscaExercicio({
     [aberto, catalogo, valor],
   );
 
+  const temTexto = valor.trim().length > 0;
+
   return (
     <div className="busca-ex">
       <input
@@ -48,7 +52,7 @@ export default function BuscaExercicio({
           setAberto(true);
         }}
       />
-      {exercicioRef && (
+      {exercicioRef ? (
         <span className="busca-ex__vinculo">
           <i className="bi bi-film" /> GIF vinculado
           <button
@@ -56,12 +60,18 @@ export default function BuscaExercicio({
             className="busca-ex__desfazer"
             onClick={onLimparRef}
             aria-label="Remover GIF vinculado"
+            title="Remover GIF vinculado"
           >
             <i className="bi bi-x" />
           </button>
         </span>
-      )}
-      {sugestoes.length > 0 && (
+      ) : temTexto ? (
+        <span className="busca-ex__custom-badge">
+          <i className="bi bi-pencil-square" /> Personalizado (sem GIF)
+        </span>
+      ) : null}
+
+      {aberto && temTexto && (
         <ul className="busca-ex__lista" role="listbox">
           {sugestoes.map((s) => (
             <li key={s.id} role="option" aria-selected={s.id === exercicioRef}>
@@ -84,6 +94,54 @@ export default function BuscaExercicio({
               </button>
             </li>
           ))}
+
+          {sugestoes.length === 0 ? (
+            <li className="busca-ex__item-custom" role="option" aria-selected={false}>
+              <div className="busca-ex__aviso-vazio">
+                <i className="bi bi-search" />
+                <span>Nenhum exercício encontrado no catálogo</span>
+              </div>
+              <button
+                type="button"
+                className="busca-ex__btn-criar-custom busca-ex__btn-criar-custom--destaque"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onDigitar(valor.trim());
+                  onLimparRef();
+                  setAberto(false);
+                }}
+              >
+                <div className="busca-ex__custom-icone">
+                  <i className="bi bi-plus-circle-fill" />
+                </div>
+                <span>
+                  <strong>Criar “{valor.trim()}”</strong>
+                  <small>Registrar como novo exercício personalizado (sem GIF)</small>
+                </span>
+              </button>
+            </li>
+          ) : (
+            <li className="busca-ex__item-custom" role="option" aria-selected={false}>
+              <button
+                type="button"
+                className="busca-ex__btn-criar-custom"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onDigitar(valor.trim());
+                  onLimparRef();
+                  setAberto(false);
+                }}
+              >
+                <div className="busca-ex__custom-icone">
+                  <i className="bi bi-pencil-square" />
+                </div>
+                <span>
+                  <strong>Usar “{valor.trim()}” sem GIF</strong>
+                  <small>Registrar como exercício personalizado</small>
+                </span>
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </div>

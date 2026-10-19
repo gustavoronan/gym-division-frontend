@@ -216,6 +216,19 @@ export default function TreinoForm({
           >
             <i className="bi bi-plus-lg" /> Adicionar exercício
           </button>
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={() =>
+              setLinhas((ls) => [
+                ...ls,
+                novaLinha({ nome: "", series: 3, repeticoes: "8-12", exercicio_ref: "" }),
+              ])
+            }
+            title="Adicionar exercício personalizado sem GIF vinculado"
+          >
+            <i className="bi bi-pencil-square" /> Novo exercício sem GIF
+          </button>
           {importaveis.length > 0 && (
             <button type="button" className="btn btn--ghost btn--sm" onClick={importar}>
               <i className="bi bi-box-arrow-in-down" /> Importar atuais ({importaveis.length})

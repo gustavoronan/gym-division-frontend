@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
+import GifExercicio from "../../components/GifExercicio/GifExercicio";
 import Modal from "../../components/Modal/Modal";
 import QRCodeModal from "../../components/QRCodeModal/QRCodeModal";
 import {
@@ -49,6 +50,7 @@ export default function Treinos() {
   const [editando, setEditando] = useState<Treino | "novo" | null>(null);
   const [removendo, setRemovendo] = useState<Treino | null>(null);
   const [escolhendo, setEscolhendo] = useState<Treino | null>(null);
+  const [visualizando, setVisualizando] = useState<Treino | null>(null);
   const [iniciando, setIniciando] = useState(false);
   const [compartilhando, setCompartilhando] = useState<{
     treino: Treino;
@@ -257,6 +259,14 @@ export default function Treinos() {
             </p>
             <div className="banner-sugestao__acoes">
               <button
+                type="button"
+                className="btn btn--ghost btn--sm"
+                onClick={() => setVisualizando(sugeridoHoje)}
+                title="Visualizar exercícios do treino sugerido"
+              >
+                <i className="bi bi-eye" /> Ver exercícios
+              </button>
+              <button
                 className="btn btn--primary btn--sm"
                 onClick={() => aoClicarIniciar(sugeridoHoje)}
                 disabled={carregandoAtuais || iniciando}
@@ -356,6 +366,14 @@ export default function Treinos() {
                   <div className="exercicio__acoes">
                     <button
                       className="icon-btn"
+                      onClick={() => setVisualizando(treino)}
+                      aria-label={`Visualizar exercícios de ${treino.nome}`}
+                      title="Visualizar prévia dos exercícios"
+                    >
+                      <i className="bi bi-eye" />
+                    </button>
+                    <button
+                      className="icon-btn"
                       onClick={() => abrirCompartilhar(treino)}
                       disabled={gerandoCodigo === treino.id}
                       aria-label={`Compartilhar ${treino.nome} por link ou QR Code`}
@@ -394,7 +412,19 @@ export default function Treinos() {
                   </div>
                 )}
 
-                <ul className="treino__itens">
+                <ul
+                  className="treino__itens treino__itens--clicavel"
+                  onClick={() => setVisualizando(treino)}
+                  role="button"
+                  tabIndex={0}
+                  title="Clique para abrir a prévia dos exercícios deste treino"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setVisualizando(treino);
+                    }
+                  }}
+                >
                   {treino.itens.slice(0, ITENS_VISIVEIS).map((item, i) => (
                     <li key={i}>
                       <span>{item.nome}</span>
@@ -406,23 +436,143 @@ export default function Treinos() {
                   ))}
                   {treino.itens.length > ITENS_VISIVEIS && (
                     <li className="treino__mais">
-                      +{treino.itens.length - ITENS_VISIVEIS} exercícios
+                      +{treino.itens.length - ITENS_VISIVEIS} exercícios (ver todos)
                     </li>
                   )}
                 </ul>
 
-                <button
-                  className="btn btn--primary btn--block"
-                  onClick={() => aoClicarIniciar(treino)}
-                  disabled={carregandoAtuais || iniciando}
-                >
-                  <i className="bi bi-play-fill" />{" "}
-                  {iniciando ? "Carregando…" : "Iniciar treino"}
-                </button>
+                <div className="treino__botoes-acao">
+                  <button
+                    type="button"
+                    className="btn btn--ghost"
+                    onClick={() => setVisualizando(treino)}
+                    title="Visualizar todos os exercícios sem iniciar"
+                  >
+                    <i className="bi bi-eye" /> Ver exercícios ({treino.itens.length})
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn--primary"
+                    onClick={() => aoClicarIniciar(treino)}
+                    disabled={carregandoAtuais || iniciando}
+                  >
+                    <i className="bi bi-play-fill" />{" "}
+                    {iniciando ? "Carregando…" : "Iniciar treino"}
+                  </button>
+                </div>
               </li>
             );
           })}
         </ul>
+      )}
+
+      {visualizando && (
+        <Modal
+          titulo={`Prévia: ${visualizando.nome}`}
+          onFechar={() => setVisualizando(null)}
+        >
+          <div className="treino-previa">
+            <div className="treino-previa__cabecalho">
+              <div className="treino-previa__badges">
+                {Array.isArray(visualizando.dias_semana) && visualizando.dias_semana.length > 0 && (
+                  <div className="treino__dias-badge">
+                    <i className="bi bi-calendar-week" />
+                    <span>
+                      {visualizando.dias_semana
+                        .slice()
+                        .sort((a, b) => (a === 0 ? 7 : a) - (b === 0 ? 7 : b))
+                        .map((d) => DIAS_LABELS[d] ?? d)
+                        .join(", ")}
+                    </span>
+                  </div>
+                )}
+                {Array.isArray(visualizando.dias_semana) &&
+                  visualizando.dias_semana.includes(hojeDia) && (
+                    <span className="selo">Hoje</span>
+                  )}
+                <span className="treino-previa__total">
+                  {visualizando.itens.length}{" "}
+                  {visualizando.itens.length === 1 ? "exercício planejado" : "exercícios planejados"}
+                </span>
+              </div>
+            </div>
+
+            {visualizando.itens.length === 0 ? (
+              <p className="treino-previa__vazio">Nenhum exercício cadastrado neste treino.</p>
+            ) : (
+              <ol className="treino-previa__lista">
+                {visualizando.itens.map((item, idx) => (
+                  <li key={idx} className="treino-previa__item">
+                    <div className="treino-previa__info">
+                      <div className="treino-previa__topo-linha">
+                        <span className="treino-previa__ordem">#{idx + 1}</span>
+                        <strong className="treino-previa__nome">{item.nome}</strong>
+                      </div>
+                      <div className="treino-previa__metas">
+                        <span className="tag-meta">
+                          <i className="bi bi-repeat" /> {item.series}{" "}
+                          {item.series === 1 ? "série" : "séries"} × {item.repeticoes}
+                        </span>
+                        {item.carga !== null && item.carga !== undefined && item.carga > 0 && (
+                          <span className="tag-carga">
+                            <i className="bi bi-speedometer2" /> {item.carga} kg
+                          </span>
+                        )}
+                        {item.exercicio_ref ? (
+                          <span className="tag-meta tag-meta--gif">
+                            <i className="bi bi-film" /> Com GIF
+                          </span>
+                        ) : (
+                          <span className="tag-meta tag-meta--custom">
+                            <i className="bi bi-pencil-square" /> Personalizado (sem GIF)
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {item.exercicio_ref && (
+                      <div className="treino-previa__thumb">
+                        <GifExercicio exercicioRef={item.exercicio_ref} nome={item.nome} />
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            <div className="treino-previa__rodape">
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => setVisualizando(null)}
+              >
+                Fechar
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => {
+                  const t = visualizando;
+                  setVisualizando(null);
+                  setEditando(t);
+                }}
+              >
+                <i className="bi bi-pencil" /> Editar treino
+              </button>
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={() => {
+                  const t = visualizando;
+                  setVisualizando(null);
+                  aoClicarIniciar(t);
+                }}
+                disabled={carregandoAtuais || iniciando}
+              >
+                <i className="bi bi-play-fill" /> Iniciar treino
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {editando && (

@@ -3,10 +3,10 @@ import { useAuth } from "../Auth/authContext";
 import { useNotificacoes } from "../Notificacoes/notificacoesContext";
 
 const ITENS = [
-  { to: "/", rotulo: "Exercícios", icone: "bi-list-check" },
-  { to: "/treinos", rotulo: "Treinos", icone: "bi-collection-fill" },
-  { to: "/amigos", rotulo: "Amigos", icone: "bi-person-heart" },
+  { to: "/", rotulo: "Treinos", icone: "bi-collection-fill" },
   { to: "/sessao", rotulo: "Treinar", icone: "bi-lightning-charge-fill" },
+  { to: "/amigos", rotulo: "Amigos", icone: "bi-person-heart" },
+  { to: "/historico", rotulo: "Histórico", icone: "bi-clock-history" },
   { to: "/perfil", rotulo: "Perfil", icone: "bi-person-circle" },
 ];
 

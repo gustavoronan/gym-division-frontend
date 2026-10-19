@@ -352,14 +352,11 @@ export default function Sessao() {
             <VazioEstado
               icone="bi-clipboard2-plus"
               titulo="Seu treino está vazio"
-              texto="Carregue um dos seus treinos salvos ou cadastre exercícios para treinar hoje."
+              texto="Escolha um dos seus treinos salvos para iniciar sua sessão de treino."
             >
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-                <Link to="/treinos" className="btn btn--primary">
+                <Link to="/" className="btn btn--primary">
                   <i className="bi bi-collection-fill" /> Escolher treino salvo
-                </Link>
-                <Link to="/" className="btn btn--ghost">
-                  <i className="bi bi-plus-lg" /> Cadastrar exercícios
                 </Link>
               </div>
             </VazioEstado>

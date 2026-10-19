@@ -7,7 +7,6 @@ import ToastProvider from "./components/Toast/ToastProvider";
 import Amigos from "./pages/Amigos/Amigos";
 import AmigoTreinos from "./pages/Amigos/AmigoTreinos";
 import TreinoPublico from "./pages/Compartilhar/TreinoPublico";
-import Dashboard from "./pages/Dashboard/Dashboard";
 import Historico from "./pages/Historico/Historico";
 import Perfil from "./pages/Perfil/Perfil";
 import Sessao from "./pages/Sessao/Sessao";
@@ -21,7 +20,7 @@ function Rotas() {
       <div className="app">
         <main className="app__conteudo">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Treinos />} />
             <Route path="/treinos" element={<Treinos />} />
             <Route path="/amigos" element={<Amigos />} />
             <Route path="/amigos/:id" element={<AmigoTreinos />} />
