@@ -39,7 +39,8 @@ export default function Historico() {
   const [expandidoId, setExpandidoId] = useState<number | null>(null);
   const [removendo, setRemovendo] = useState<SessaoTreino | null>(null);
   const [modalConquistas, setModalConquistas] = useState(false);
-  const [modalResumoMes, setModalResumoMes] = useState(false);
+  const [modalResumoStory, setModalResumoStory] = useState(false);
+  const [modoStory, setModoStory] = useState<"semana" | "mes">("semana");
 
   useEffect(() => {
     let ativo = true;
@@ -114,7 +115,7 @@ export default function Historico() {
         </section>
       )}
 
-      {/* Botões de Ação Rápida: Conquistas & Resumo do Mês */}
+      {/* Botões de Ação Rápida: Conquistas, Resumo da Semana & Resumo do Mês */}
       <section className="historico-atalhos-grid">
         <button
           type="button"
@@ -132,7 +133,26 @@ export default function Historico() {
         <button
           type="button"
           className="card atalho-historico-btn"
-          onClick={() => setModalResumoMes(true)}
+          onClick={() => {
+            setModoStory("semana");
+            setModalResumoStory(true);
+          }}
+        >
+          <span className="atalho-historico-btn__icone">⚡</span>
+          <div className="atalho-historico-btn__info">
+            <strong>Resumo da Semana</strong>
+            <span>Card para Instagram Stories</span>
+          </div>
+          <i className="bi bi-chevron-right" />
+        </button>
+
+        <button
+          type="button"
+          className="card atalho-historico-btn"
+          onClick={() => {
+            setModoStory("mes");
+            setModalResumoStory(true);
+          }}
         >
           <span className="atalho-historico-btn__icone">📸</span>
           <div className="atalho-historico-btn__info">
@@ -278,10 +298,11 @@ export default function Historico() {
         />
       )}
 
-      {modalResumoMes && (
+      {modalResumoStory && (
         <ResumoMesModal
-          aberto={modalResumoMes}
-          onFechar={() => setModalResumoMes(false)}
+          aberto={modalResumoStory}
+          modoInicial={modoStory}
+          onFechar={() => setModalResumoStory(false)}
         />
       )}
     </>

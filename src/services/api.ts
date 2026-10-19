@@ -6,6 +6,7 @@ import type {
   ExercicioInput,
   ResumoCarga,
   ResumoMes,
+  ResumoSemana,
   SessaoTreino,
 } from "../types/exercicio";
 import type {
@@ -301,6 +302,13 @@ export const sessoesApi = {
     if (mes) params.append("mes", String(mes));
     const q = params.toString() ? `?${params.toString()}` : "";
     return request<ResumoMes>(`/sessoes/resumo-mes/${q}`);
+  },
+
+  resumoSemana(data?: string) {
+    const params = new URLSearchParams();
+    if (data) params.append("data", data);
+    const q = params.toString() ? `?${params.toString()}` : "";
+    return request<ResumoSemana>(`/sessoes/resumo-semana/${q}`);
   },
 };
 

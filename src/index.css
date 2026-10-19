@@ -3075,11 +3075,47 @@ button:disabled {
   color: var(--muted);
 }
 
-/* ---------- Resumo do Mês (Stories) Modal ---------- */
+/* ---------- Resumo Stories (Semana & Mês) Modal ---------- */
 .resumo-mes-modal {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.resumo-story-abas {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.resumo-story-aba {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.resumo-story-aba:hover {
+  color: var(--text);
+}
+
+.resumo-story-aba--ativa {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .resumo-mes-seletor {
@@ -3674,6 +3710,300 @@ body {
     flex-wrap: wrap !important;
     gap: 8px !important;
   }
+}
+
+/* ---------- Ranking Story & Ações do Topo ---------- */
+.ranking-topo-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ranking-btn-story {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.15));
+  border: 1px solid rgba(236, 72, 153, 0.35);
+  color: #f472b6;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.ranking-btn-story:hover {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(168, 85, 247, 0.25));
+  color: #fbcfe8;
+  border-color: rgba(236, 72, 153, 0.6);
+  transform: translateY(-1px);
+}
+
+.ranking-story-card {
+  background: linear-gradient(165deg, #070a13 0%, #0d1222 50%, #151c30 100%);
+  border: 2px solid rgba(250, 204, 21, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(250, 204, 21, 0.1);
+}
+
+.ranking-story-card::before {
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.2) 0%, transparent 70%);
+}
+
+.ranking-story__criterio-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-top: 2px;
+}
+
+.ranking-story__podio {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0;
+  z-index: 1;
+}
+
+.ranking-story__podio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.ranking-story__podio-item--lider {
+  background: linear-gradient(90deg, rgba(250, 204, 21, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(250, 204, 21, 0.35);
+}
+
+.ranking-story__podio-item--voce {
+  border-color: rgba(196, 255, 61, 0.4);
+  background: rgba(196, 255, 61, 0.06);
+}
+
+.ranking-story__podio-medalha {
+  font-size: 1.35rem;
+  line-height: 1;
+  flex: none;
+}
+
+.ranking-story__podio-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.ranking-story__podio-nome {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-story__voce-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #000;
+}
+
+.ranking-story__podio-valor {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.ranking-story__voce-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(196, 255, 61, 0.08);
+  border: 1px solid rgba(196, 255, 61, 0.35);
+  backdrop-filter: blur(8px);
+  z-index: 1;
+}
+
+.ranking-story__voce-icone {
+  font-size: 1.5rem;
+  flex: none;
+}
+
+.ranking-story__voce-conteudo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ranking-story__voce-sub {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 0.06em;
+}
+
+.ranking-story__voce-titulo {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.ranking-story__voce-detalhe {
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Como Instalar Modal & Tutorial Desktop ---------- */
+.como-instalar-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.instalacao-rapida-box {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(196, 255, 61, 0.08));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instalacao-rapida-box strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.instalacao-rapida-box p {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.tutorial-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tutorial-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tutorial-card__topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tutorial-card__badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.tutorial-card__topo strong {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.tutorial-passos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tutorial-passos li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.tutorial-passos li span:last-child {
+  flex: 1;
+}
+
+.passo-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex: none;
+  margin-top: 1px;
+}
+
+.tutorial-dica {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(250, 204, 21, 0.08);
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #fef08a;
+}
+
+.tutorial-dica i {
+  font-size: 1.15rem;
+  color: #facc15;
+  flex: none;
+  margin-top: 1px;
 }
 
 

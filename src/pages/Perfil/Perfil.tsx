@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../components/Auth/authContext";
 import ConquistasModal from "../../components/Conquistas/ConquistasModal";
 import ResumoMesModal from "../../components/ResumoMes/ResumoMesModal";
+import ComoInstalarModal from "../../components/ComoInstalar/ComoInstalarModal";
 import { useToast } from "../../components/Toast/toastContext";
 import { authApi } from "../../services/api";
 
@@ -17,6 +18,7 @@ export default function Perfil() {
   const [salvando, setSalvando] = useState(false);
   const [modalConquistas, setModalConquistas] = useState(false);
   const [modalResumoMes, setModalResumoMes] = useState(false);
+  const [modalComoInstalar, setModalComoInstalar] = useState(false);
 
   const trocandoSenha = novaSenha !== "";
   const valido =
@@ -97,8 +99,25 @@ export default function Perfil() {
             📸
           </span>
           <div>
-            <strong>Resumo do Mês</strong>
+            <strong>Compartilhar Resumo</strong>
             <span>Gere seu card de Stories para o Instagram</span>
+          </div>
+        </div>
+        <i className="bi bi-chevron-right" />
+      </button>
+
+      <button
+        type="button"
+        className="card link-historico-perfil"
+        onClick={() => setModalComoInstalar(true)}
+      >
+        <div className="link-historico-perfil__info">
+          <span className="link-historico-perfil__icone" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}>
+            💻
+          </span>
+          <div>
+            <strong>Como Instalar o App</strong>
+            <span>Instale na Área de Trabalho do PC ou no celular</span>
           </div>
         </div>
         <i className="bi bi-chevron-right" />
@@ -168,6 +187,13 @@ export default function Perfil() {
         <ResumoMesModal
           aberto={modalResumoMes}
           onFechar={() => setModalResumoMes(false)}
+        />
+      )}
+
+      {modalComoInstalar && (
+        <ComoInstalarModal
+          aberto={modalComoInstalar}
+          onFechar={() => setModalComoInstalar(false)}
         />
       )}
     </>

@@ -134,3 +134,29 @@ export interface ResumoMes {
   maior_pr_mes: { exercicio: string; carga: number } | null;
   meses_disponiveis: MesOpcao[];
 }
+
+export interface SemanaOpcao {
+  data_inicio: string;
+  data_fim: string;
+  rotulo: string;
+}
+
+export interface ResumoSemana {
+  inicio_semana: string;
+  fim_semana: string;
+  nome_semana: string;
+  usuario: {
+    id: number;
+    username: string;
+    first_name: string;
+  };
+  total_treinos: number;
+  dias_treinados: number;
+  tempo_total_min: number;
+  tempo_formatado: string;
+  volume_total_kg: number;
+  volume_formatado: string;
+  exercicio_favorito: ResumoMesExercicio | null;
+  maior_pr_semana: { exercicio: string; carga: number } | null;
+  semanas_disponiveis: SemanaOpcao[];
+}

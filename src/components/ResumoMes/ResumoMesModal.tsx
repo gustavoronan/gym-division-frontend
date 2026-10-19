@@ -4,44 +4,80 @@ import Modal from "../Modal/Modal";
 import { ErroEstado, ListaSkeleton } from "../States/States";
 import { useToast } from "../Toast/toastContext";
 import { sessoesApi } from "../../services/api";
-import type { ResumoMes } from "../../types/exercicio";
+import type { ResumoMes, ResumoSemana } from "../../types/exercicio";
 
 interface ResumoMesModalProps {
   aberto: boolean;
+  modoInicial?: "semana" | "mes";
   onFechar: () => void;
 }
 
-export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps) {
+export default function ResumoMesModal({
+  aberto,
+  modoInicial = "semana",
+  onFechar,
+}: ResumoMesModalProps) {
   const toast = useToast();
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const [dados, setDados] = useState<ResumoMes | null>(null);
+  const [modo, setModo] = useState<"semana" | "mes">(modoInicial);
+  const [dadosMes, setDadosMes] = useState<ResumoMes | null>(null);
+  const [dadosSemana, setDadosSemana] = useState<ResumoSemana | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [exportando, setExportando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [mesSelecionado, setMesSelecionado] = useState<{ ano?: number; mes?: number }>({});
+  const [semanaSelecionada, setSemanaSelecionada] = useState<string>("");
   const [tentativa, setTentativa] = useState(0);
 
+  // Sincroniza modo se modoInicial mudar ao reabrir
+  useEffect(() => {
+    if (aberto && modoInicial) {
+      setModo(modoInicial);
+    }
+  }, [aberto, modoInicial]);
+
+  // Carrega dados conforme o modo ativo
   useEffect(() => {
     if (!aberto) return;
     let ativo = true;
-    sessoesApi
-      .resumoMes(mesSelecionado.ano, mesSelecionado.mes)
-      .then((res) => {
-        if (!ativo) return;
-        setDados(res);
-      })
-      .catch((e: Error) => {
-        if (!ativo) return;
-        setErro(e.message || "Erro ao carregar resumo do mês.");
-      })
-      .finally(() => {
-        if (ativo) setCarregando(false);
-      });
+    setCarregando(true);
+    setErro(null);
+
+    if (modo === "semana") {
+      sessoesApi
+        .resumoSemana(semanaSelecionada || undefined)
+        .then((res) => {
+          if (!ativo) return;
+          setDadosSemana(res);
+        })
+        .catch((e: Error) => {
+          if (!ativo) return;
+          setErro(e.message || "Erro ao carregar resumo da semana.");
+        })
+        .finally(() => {
+          if (ativo) setCarregando(false);
+        });
+    } else {
+      sessoesApi
+        .resumoMes(mesSelecionado.ano, mesSelecionado.mes)
+        .then((res) => {
+          if (!ativo) return;
+          setDadosMes(res);
+        })
+        .catch((e: Error) => {
+          if (!ativo) return;
+          setErro(e.message || "Erro ao carregar resumo do mês.");
+        })
+        .finally(() => {
+          if (ativo) setCarregando(false);
+        });
+    }
+
     return () => {
       ativo = false;
     };
-  }, [aberto, mesSelecionado, tentativa]);
+  }, [aberto, modo, mesSelecionado, semanaSelecionada, tentativa]);
 
   if (!aberto) return null;
 
@@ -50,6 +86,21 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
     setErro(null);
     setTentativa((t) => t + 1);
   };
+
+  const ehSemana = modo === "semana";
+  const dados = ehSemana ? dadosSemana : dadosMes;
+
+  const nomeArquivo = ehSemana
+    ? `resumo-semana-division-${dadosSemana?.inicio_semana ?? "semana"}.png`
+    : `resumo-mes-division-${dadosMes?.ano}-${String(dadosMes?.mes).padStart(2, "0")}.png`;
+
+  const tituloStory = ehSemana
+    ? `Meu resumo da semana no Division`
+    : `Meu resumo de ${dadosMes?.nome_mes} no Division`;
+
+  const textoCompartilhar = ehSemana
+    ? `Confira meus resultados desta semana! #DivisionApp`
+    : `Confira meus resultados de ${dadosMes?.nome_mes}! #DivisionApp`;
 
   const baixarImagem = async () => {
     if (!cardRef.current || !dados) return;
@@ -60,7 +111,7 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
         pixelRatio: 2, // 2x para alta definição
       });
       const link = document.createElement("a");
-      link.download = `resumo-division-${dados.ano}-${String(dados.mes).padStart(2, "0")}.png`;
+      link.download = nomeArquivo;
       link.href = dataUrl;
       link.click();
       toast.sucesso("Imagem do Story baixada com sucesso!");
@@ -82,21 +133,21 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
 
       const res = await fetch(dataUrl);
       const blob = await res.blob();
-      const file = new File([blob], `resumo-division-${dados.ano}-${dados.mes}.png`, {
+      const file = new File([blob], nomeArquivo, {
         type: "image/png",
       });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
-          title: `Meu resumo de ${dados.nome_mes} no Division`,
-          text: `Confira meus resultados de ${dados.nome_mes}! #DivisionApp`,
+          title: tituloStory,
+          text: textoCompartilhar,
         });
         toast.sucesso("Compartilhado com sucesso!");
       } else {
         // Fallback: faz o download e copia o texto
         const link = document.createElement("a");
-        link.download = `resumo-division-${dados.ano}-${dados.mes}.png`;
+        link.download = nomeArquivo;
         link.href = dataUrl;
         link.click();
         await copiarLegenda();
@@ -111,16 +162,31 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
 
   const copiarLegenda = async () => {
     if (!dados) return;
-    const texto = [
-      `⚡ Meu Resumo de ${dados.nome_mes} no Division:`,
-      `💪 ${dados.total_treinos} treinos realizados (${dados.dias_treinados} dias)`,
-      `🏋️ ${dados.volume_formatado} levantados`,
-      dados.exercicio_favorito ? `⭐ Exercício favorito: ${dados.exercicio_favorito.nome}` : "",
-      dados.maior_pr_mes ? `🚀 Recorde do mês: ${dados.maior_pr_mes.carga} kg no ${dados.maior_pr_mes.exercicio}` : "",
-      `#Division #Fitness #Treino #Gym`,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    let texto = "";
+
+    if (ehSemana && dadosSemana) {
+      texto = [
+        `⚡ Meu Resumo da Semana no Division:`,
+        `💪 ${dadosSemana.total_treinos} treinos realizados (${dadosSemana.dias_treinados} dias)`,
+        `🏋️ ${dadosSemana.volume_formatado} levantados`,
+        dadosSemana.exercicio_favorito ? `⭐ Exercício favorito: ${dadosSemana.exercicio_favorito.nome}` : "",
+        dadosSemana.maior_pr_semana ? `🚀 Recorde da semana: ${dadosSemana.maior_pr_semana.carga} kg no ${dadosSemana.maior_pr_semana.exercicio}` : "",
+        `#Division #Fitness #SemanaPaga #Treino #Gym`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+    } else if (dadosMes) {
+      texto = [
+        `⚡ Meu Resumo de ${dadosMes.nome_mes} no Division:`,
+        `💪 ${dadosMes.total_treinos} treinos realizados (${dadosMes.dias_treinados} dias)`,
+        `🏋️ ${dadosMes.volume_formatado} levantados`,
+        dadosMes.exercicio_favorito ? `⭐ Exercício favorito: ${dadosMes.exercicio_favorito.nome}` : "",
+        dadosMes.maior_pr_mes ? `🚀 Recorde do mês: ${dadosMes.maior_pr_mes.carga} kg no ${dadosMes.maior_pr_mes.exercicio}` : "",
+        `#Division #Fitness #Treino #Gym`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+    }
 
     try {
       await navigator.clipboard.writeText(texto);
@@ -130,30 +196,83 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
     }
   };
 
+  const maiorPr = ehSemana ? dadosSemana?.maior_pr_semana : dadosMes?.maior_pr_mes;
+  const labelPr = ehSemana ? "Maior Carga da Semana" : "Maior Carga do Mês";
+  const periodoTexto = ehSemana
+    ? (dadosSemana?.nome_semana ?? "").toUpperCase()
+    : (dadosMes?.nome_mes ?? "").toUpperCase();
+  const tagCard = ehSemana ? "RESUMO SEMANAL" : "RESUMO MENSAL";
+
   return (
-    <Modal titulo="Resumo do Mês para Instagram" onFechar={onFechar} centralizado>
+    <Modal
+      titulo={ehSemana ? "Resumo da Semana para Story" : "Resumo do Mês para Story"}
+      onFechar={onFechar}
+      centralizado
+    >
       <div className="resumo-mes-modal">
+        {/* Seletor de Modo: Semana ou Mês */}
+        <div className="resumo-story-abas" role="tablist" aria-label="Tipo de resumo para Story">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={ehSemana}
+            className={`resumo-story-aba ${ehSemana ? "resumo-story-aba--ativa" : ""}`}
+            onClick={() => setModo("semana")}
+          >
+            <i className="bi bi-calendar-week" /> Semana
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={!ehSemana}
+            className={`resumo-story-aba ${!ehSemana ? "resumo-story-aba--ativa" : ""}`}
+            onClick={() => setModo("mes")}
+          >
+            <i className="bi bi-calendar-month" /> Mês
+          </button>
+        </div>
+
         {carregando ? (
           <ListaSkeleton linhas={5} />
         ) : erro ? (
           <ErroEstado mensagem={erro} onTentar={recarregar} />
         ) : dados ? (
           <>
-            {/* Seletor de Mês */}
-            {dados.meses_disponiveis && dados.meses_disponiveis.length > 1 && (
+            {/* Seletor de Período (Semana ou Mês) */}
+            {ehSemana && dadosSemana?.semanas_disponiveis && dadosSemana.semanas_disponiveis.length > 1 && (
+              <div className="resumo-mes-seletor">
+                <label className="label" style={{ margin: 0 }}>
+                  <span>Escolha a semana:</span>
+                  <select
+                    className="input"
+                    value={dadosSemana.inicio_semana}
+                    onChange={(e) => {
+                      setSemanaSelecionada(e.target.value);
+                    }}
+                  >
+                    {dadosSemana.semanas_disponiveis.map((opcao) => (
+                      <option key={opcao.data_inicio} value={opcao.data_inicio}>
+                        {opcao.rotulo}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            )}
+
+            {!ehSemana && dadosMes?.meses_disponiveis && dadosMes.meses_disponiveis.length > 1 && (
               <div className="resumo-mes-seletor">
                 <label className="label" style={{ margin: 0 }}>
                   <span>Escolha o mês:</span>
                   <select
                     className="input"
-                    value={`${dados.ano}-${dados.mes}`}
+                    value={`${dadosMes.ano}-${dadosMes.mes}`}
                     onChange={(e) => {
                       const [a, m] = e.target.value.split("-").map(Number);
-                      setCarregando(true);
                       setMesSelecionado({ ano: a, mes: m });
                     }}
                   >
-                    {dados.meses_disponiveis.map((opcao) => (
+                    {dadosMes.meses_disponiveis.map((opcao) => (
                       <option key={`${opcao.ano}-${opcao.mes}`} value={`${opcao.ano}-${opcao.mes}`}>
                         {opcao.rotulo}
                       </option>
@@ -172,12 +291,12 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
                     <i className="bi bi-lightning-charge-fill" />
                     <span>DIVISION</span>
                   </div>
-                  <span className="resumo-story__tag">RESUMO MENSAL</span>
+                  <span className="resumo-story__tag">{tagCard}</span>
                 </header>
 
                 {/* Usuário e Período */}
                 <div className="resumo-story__periodo-box">
-                  <span className="resumo-story__mes">{dados.nome_mes.toUpperCase()}</span>
+                  <span className="resumo-story__mes">{periodoTexto}</span>
                   <div className="resumo-story__user">
                     <span>@{dados.usuario.username}</span>
                   </div>
@@ -219,7 +338,9 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
                   <div className="resumo-story__destaque-box">
                     <div className="resumo-story__destaque-icone">⭐</div>
                     <div className="resumo-story__destaque-texto">
-                      <span className="resumo-story__destaque-sub">Exercício Favorito</span>
+                      <span className="resumo-story__destaque-sub">
+                        {ehSemana ? "Destaque da Semana" : "Exercício Favorito"}
+                      </span>
                       <strong className="resumo-story__destaque-titulo">
                         {dados.exercicio_favorito.nome}
                       </strong>
@@ -233,16 +354,16 @@ export default function ResumoMesModal({ aberto, onFechar }: ResumoMesModalProps
                 )}
 
                 {/* Destaque: Maior Recorde */}
-                {dados.maior_pr_mes && (
+                {maiorPr && (
                   <div className="resumo-story__destaque-box resumo-story__destaque-box--pr">
                     <div className="resumo-story__destaque-icone">🚀</div>
                     <div className="resumo-story__destaque-texto">
-                      <span className="resumo-story__destaque-sub">Maior Carga do Mês</span>
+                      <span className="resumo-story__destaque-sub">{labelPr}</span>
                       <strong className="resumo-story__destaque-titulo">
-                        {dados.maior_pr_mes.carga} kg
+                        {maiorPr.carga} kg
                       </strong>
                       <span className="resumo-story__destaque-detalhe">
-                        no {dados.maior_pr_mes.exercicio}
+                        no {maiorPr.exercicio}
                       </span>
                     </div>
                   </div>

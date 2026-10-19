@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import RankingStoryModal from "../../components/RankingStory/RankingStoryModal";
 import { ErroEstado, ListaSkeleton, VazioEstado } from "../../components/States/States";
 import { rankingApi } from "../../services/api";
 import type { RankingSemanal } from "../../types/social";
@@ -19,6 +20,7 @@ export default function RankingAba() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [tentativa, setTentativa] = useState(0);
+  const [modalStory, setModalStory] = useState(false);
 
   const carregar = () => {
     setCarregando(true);
@@ -54,22 +56,36 @@ export default function RankingAba() {
 
   return (
     <div className="ranking-container">
-      {/* Seletor de Critério */}
-      <div className="ranking-seletor">
-        <button
-          type="button"
-          className={`btn btn--sm ${criterio === "dias" ? "btn--primary" : "btn--ghost"}`}
-          onClick={() => setCriterio("dias")}
-        >
-          <i className="bi bi-calendar-check" /> Mais Dias
-        </button>
-        <button
-          type="button"
-          className={`btn btn--sm ${criterio === "volume" ? "btn--primary" : "btn--ghost"}`}
-          onClick={() => setCriterio("volume")}
-        >
-          <i className="bi bi-bar-chart-fill" /> Maior Volume (kg)
-        </button>
+      {/* Ações e Seletor do Topo */}
+      <div className="ranking-topo-acoes">
+        <div className="ranking-seletor">
+          <button
+            type="button"
+            className={`btn btn--sm ${criterio === "dias" ? "btn--primary" : "btn--ghost"}`}
+            onClick={() => setCriterio("dias")}
+          >
+            <i className="bi bi-calendar-check" /> Mais Dias
+          </button>
+          <button
+            type="button"
+            className={`btn btn--sm ${criterio === "volume" ? "btn--primary" : "btn--ghost"}`}
+            onClick={() => setCriterio("volume")}
+          >
+            <i className="bi bi-bar-chart-fill" /> Maior Volume (kg)
+          </button>
+        </div>
+
+        {dados && dados.ranking.length > 0 && (
+          <button
+            type="button"
+            className="btn btn--secondary btn--sm btn--icon-text ranking-btn-story"
+            onClick={() => setModalStory(true)}
+            title="Compartilhar ranking semanal nos Stories"
+          >
+            <i className="bi bi-instagram" />
+            <span>Compartilhar Story</span>
+          </button>
+        )}
       </div>
 
       {dados && (
@@ -157,6 +173,15 @@ export default function RankingAba() {
             );
           })}
         </ul>
+      )}
+
+      {dados && modalStory && (
+        <RankingStoryModal
+          dados={dados}
+          criterio={criterio}
+          aberto={modalStory}
+          onFechar={() => setModalStory(false)}
+        />
       )}
     </div>
   );
