@@ -3208,5 +3208,90 @@ button:disabled {
   gap: 8px;
 }
 
+/* ---------- Reordenação de Treinos (Arrastar e Mover) ---------- */
+.treino__esquerda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.treino__reordenar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.treino__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 38px;
+  color: var(--muted);
+  cursor: grab;
+  user-select: none;
+  font-size: 1.15rem;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.treino__drag-handle:hover {
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
+.treino__drag-handle:active {
+  cursor: grabbing;
+}
+
+.treino__setas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.icon-btn--micro {
+  width: 22px;
+  height: 18px;
+  padding: 0;
+  font-size: 0.72rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  transition: all 0.15s ease;
+}
+
+.icon-btn--micro:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.icon-btn--micro:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.treino--arrastando {
+  opacity: 0.45;
+  transform: scale(0.98);
+  border: 2px dashed var(--accent) !important;
+  box-shadow: none !important;
+}
+
+.treino--alvo-drop {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-soft), 0 4px 16px rgba(59, 130, 246, 0.25) !important;
+  transform: translateY(-2px);
+  transition: all 0.15s ease;
+}
+
+
 
 

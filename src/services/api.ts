@@ -176,6 +176,13 @@ export const treinosApi = {
     });
   },
 
+  atualizarDias(id: number, dias_semana: number[]) {
+    return request<Treino>(`/treinos/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify({ dias_semana }),
+    });
+  },
+
   excluir(id: number) {
     return request<void>(`/treinos/${id}/`, { method: "DELETE" });
   },

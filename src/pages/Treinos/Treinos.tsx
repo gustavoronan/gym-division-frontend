@@ -38,7 +38,7 @@ const NOMES_DIAS: Record<number, string> = {
 };
 
 export default function Treinos() {
-  const { treinos, carregando, erro, recarregar, criar, editar, excluir } =
+  const { treinos, carregando, erro, recarregar, criar, editar, excluir, reordenar } =
     useTreinos();
   // A lista atual de exercícios é usada para perguntar "substituir ou adicionar?"
   // e para importar exercícios ao montar um treino novo.
@@ -56,12 +56,106 @@ export default function Treinos() {
   } | null>(null);
   const [gerandoCodigo, setGerandoCodigo] = useState<number | null>(null);
 
+  // Estados de arrasto e reordenação
+  const [arrastandoIndex, setArrastandoIndex] = useState<number | null>(null);
+  const [alvoIndex, setAlvoIndex] = useState<number | null>(null);
+  const [reordenando, setReordenando] = useState(false);
+  const [touchOrigemIndex, setTouchOrigemIndex] = useState<number | null>(null);
+
   const hojeDia = new Date().getDay(); // 0=Dom, 1=Seg...
   const nomeHoje = NOMES_DIAS[hojeDia];
 
   const sugeridoHoje = useMemo(() => {
     return treinos.find((t) => Array.isArray(t.dias_semana) && t.dias_semana.includes(hojeDia));
   }, [treinos, hojeDia]);
+
+  const aoMoverCard = async (origem: number, destino: number) => {
+    if (origem === destino || reordenando) return;
+    setReordenando(true);
+    try {
+      const atualizados = await reordenar(origem, destino);
+      const movido = atualizados[destino];
+      const diasStr = movido?.dias_semana?.length
+        ? movido.dias_semana
+            .slice()
+            .sort((a, b) => (a === 0 ? 7 : a) - (b === 0 ? 7 : b))
+            .map((d) => DIAS_LABELS[d] ?? d)
+            .join(", ")
+        : "";
+      toast.sucesso(
+        diasStr
+          ? `Treino "${movido.nome}" adaptado para ${diasStr}!`
+          : `Treino "${movido.nome}" reordenado!`
+      );
+    } catch {
+      toast.erro("Não foi possível salvar a nova ordem dos treinos.");
+    } finally {
+      setReordenando(false);
+    }
+  };
+
+  const onDragStart = (e: React.DragEvent, index: number) => {
+    setArrastandoIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+
+  const onDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (alvoIndex !== index) {
+      setAlvoIndex(index);
+    }
+  };
+
+  const onDragLeave = (_e: React.DragEvent, index: number) => {
+    if (alvoIndex === index) {
+      setAlvoIndex(null);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    const origemStr = e.dataTransfer.getData("text/plain");
+    const origem = Number(origemStr);
+    setArrastandoIndex(null);
+    setAlvoIndex(null);
+    if (!isNaN(origem) && origem !== index) {
+      aoMoverCard(origem, index);
+    }
+  };
+
+  const onDragEnd = () => {
+    setArrastandoIndex(null);
+    setAlvoIndex(null);
+  };
+
+  const onTouchStartHandle = (_e: React.TouchEvent, index: number) => {
+    setTouchOrigemIndex(index);
+    setArrastandoIndex(index);
+  };
+
+  const onTouchMoveHandle = (e: React.TouchEvent) => {
+    if (touchOrigemIndex === null) return;
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const cardEl = el?.closest("[data-treino-index]");
+    if (cardEl) {
+      const idx = Number(cardEl.getAttribute("data-treino-index"));
+      if (!isNaN(idx) && idx !== alvoIndex) {
+        setAlvoIndex(idx);
+      }
+    }
+  };
+
+  const onTouchEndHandle = () => {
+    if (touchOrigemIndex !== null && alvoIndex !== null && touchOrigemIndex !== alvoIndex) {
+      aoMoverCard(touchOrigemIndex, alvoIndex);
+    }
+    setTouchOrigemIndex(null);
+    setArrastandoIndex(null);
+    setAlvoIndex(null);
+  };
 
   const abrirCompartilhar = async (treino: Treino) => {
     if (treino.codigo_compartilhamento) {
@@ -132,7 +226,9 @@ export default function Treinos() {
           <p>
             {carregando
               ? "Carregando…"
-              : `${treinos.length} ${treinos.length === 1 ? "treino salvo" : "treinos salvos"}`}
+              : `${treinos.length} ${treinos.length === 1 ? "treino salvo" : "treinos salvos"}${
+                  treinos.length > 1 ? " · Arraste para organizar na semana" : ""
+                }`}
           </p>
         </div>
         <button
@@ -187,22 +283,75 @@ export default function Treinos() {
           </button>
         </VazioEstado>
       ) : (
-        <ul className="lista">
-          {treinos.map((treino) => {
+        <ul className="lista treinos-lista">
+          {treinos.map((treino, index) => {
             const ehHoje =
               Array.isArray(treino.dias_semana) && treino.dias_semana.includes(hojeDia);
+            const estaArrastando = arrastandoIndex === index;
+            const ehAlvoDrop = alvoIndex === index && arrastandoIndex !== index;
+
             return (
-              <li key={treino.id} className="card treino">
+              <li
+                key={treino.id}
+                data-treino-index={index}
+                draggable={!reordenando}
+                onDragStart={(e) => onDragStart(e, index)}
+                onDragOver={(e) => onDragOver(e, index)}
+                onDragLeave={(e) => onDragLeave(e, index)}
+                onDrop={(e) => onDrop(e, index)}
+                onDragEnd={onDragEnd}
+                className={`card treino ${estaArrastando ? "treino--arrastando" : ""} ${
+                  ehAlvoDrop ? "treino--alvo-drop" : ""
+                }`}
+              >
                 <div className="treino__topo">
-                  <div className="treino__titulo">
-                    <div className="treino__titulo-linha">
-                      <strong>{treino.nome}</strong>
-                      {ehHoje && <span className="selo">Hoje</span>}
+                  <div className="treino__esquerda">
+                    {treinos.length > 1 && (
+                      <div className="treino__reordenar">
+                        <div
+                          className="treino__drag-handle"
+                          title="Arraste para mover o treino"
+                          onTouchStart={(e) => onTouchStartHandle(e, index)}
+                          onTouchMove={onTouchMoveHandle}
+                          onTouchEnd={onTouchEndHandle}
+                        >
+                          <i className="bi bi-grip-vertical" />
+                        </div>
+                        <div className="treino__setas">
+                          <button
+                            type="button"
+                            className="icon-btn icon-btn--micro"
+                            onClick={() => aoMoverCard(index, index - 1)}
+                            disabled={index === 0 || reordenando}
+                            title="Mover para cima"
+                            aria-label={`Mover ${treino.nome} para cima`}
+                          >
+                            <i className="bi bi-chevron-up" />
+                          </button>
+                          <button
+                            type="button"
+                            className="icon-btn icon-btn--micro"
+                            onClick={() => aoMoverCard(index, index + 1)}
+                            disabled={index === treinos.length - 1 || reordenando}
+                            title="Mover para baixo"
+                            aria-label={`Mover ${treino.nome} para baixo`}
+                          >
+                            <i className="bi bi-chevron-down" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="treino__titulo">
+                      <div className="treino__titulo-linha">
+                        <strong>{treino.nome}</strong>
+                        {ehHoje && <span className="selo">Hoje</span>}
+                      </div>
+                      <span>
+                        {treino.itens.length}{" "}
+                        {treino.itens.length === 1 ? "exercício" : "exercícios"}
+                      </span>
                     </div>
-                    <span>
-                      {treino.itens.length}{" "}
-                      {treino.itens.length === 1 ? "exercício" : "exercícios"}
-                    </span>
                   </div>
                   <div className="exercicio__acoes">
                     <button
