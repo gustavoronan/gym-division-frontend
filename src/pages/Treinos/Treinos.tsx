@@ -85,7 +85,8 @@ export default function Treinos() {
     setIniciando(true);
     try {
       await treinosApi.iniciar(treino.id, substituir);
-      toast.sucesso(`${treino.nome} carregado. Bom treino!`);
+      localStorage.setItem("treino_iniciado_em", new Date().toISOString());
+      toast.sucesso(`${treino.nome} iniciado. Bom treino!`);
       navigate("/sessao");
     } catch (e) {
       toast.erro((e as Error).message);

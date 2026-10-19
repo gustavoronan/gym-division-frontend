@@ -77,6 +77,8 @@ export interface ConcluirSessaoInput {
   nome: string;
   data: string;
   duracao_min?: number | null;
+  iniciado_em?: string | null;
+  finalizado_em?: string | null;
   limpar_exercicios_atuais?: boolean;
   exercicios: SessaoExercicio[];
 }

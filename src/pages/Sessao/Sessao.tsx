@@ -13,7 +13,7 @@ import { useExercicios } from "../../hooks/useExercicios";
 import { sessoesApi, treinosApi } from "../../services/api";
 import type { Exercicio, ResumoCarga } from "../../types/exercicio";
 import type { Treino } from "../../types/treino";
-import { dataDeHoje } from "../../utils/data";
+import { calcularIntervaloMinutos, dataDeHoje, formatarHora } from "../../utils/data";
 
 interface SerieItem {
   numero: number;
@@ -74,47 +74,15 @@ export default function Sessao() {
     nome_dia: string;
   } | null>(null);
 
-  // Cronômetro da sessão
-  const [tempoSegundos, setTempoSegundos] = useState(0);
+  // Momento em que o usuário clicou em "Iniciar treino"
+  const [iniciadoEm, setIniciadoEm] = useState<string | null>(() =>
+    localStorage.getItem("treino_iniciado_em"),
+  );
   const [finalizando, setFinalizando] = useState(false);
   const [modalConcluir, setModalConcluir] = useState(false);
   const [limparAoConcluir, setLimparAoConcluir] = useState(true);
   const [reiniciando, setReiniciando] = useState(false);
   const [iniciandoSugerido, setIniciandoSugerido] = useState(false);
-
-  // Timer de descanso rápido
-  const [descansoSegundos, setDescansoSegundos] = useState<number | null>(null);
-  const [modalDescanso, setModalDescanso] = useState(false);
-
-  // Cronômetro de tempo decorrido do treino
-  useEffect(() => {
-    if (exercicios.length === 0) return;
-    const interval = setInterval(() => {
-      setTempoSegundos((t) => t + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [exercicios.length]);
-
-  // Contagem regressiva do descanso
-  useEffect(() => {
-    if (descansoSegundos === null || descansoSegundos <= 0) return;
-    const timer = setInterval(() => {
-      setDescansoSegundos((seg) => {
-        if (seg === null || seg <= 1) {
-          clearInterval(timer);
-          try {
-            if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
-          } catch {
-            /* sem suporte a vibração */
-          }
-          toast.sucesso("⏱️ Tempo de descanso encerrado! Próxima série!");
-          return null;
-        }
-        return seg - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [descansoSegundos, toast]);
 
   // Carrega últimas cargas e sugestão do dia
   useEffect(() => {
@@ -190,8 +158,10 @@ export default function Sessao() {
     }
 
     const serieFoiMarcada = novasSeries.find((s) => s.numero === numSerie)?.concluida;
-    if (serieFoiMarcada && descansoSegundos === null) {
-      setDescansoSegundos(60);
+    if (serieFoiMarcada && !iniciadoEm) {
+      const agoraIso = new Date().toISOString();
+      localStorage.setItem("treino_iniciado_em", agoraIso);
+      setIniciadoEm(agoraIso);
     }
   };
 
@@ -238,6 +208,9 @@ export default function Sessao() {
     setIniciandoSugerido(true);
     try {
       await treinosApi.iniciar(sugestaoHoje.sugerido.id, true);
+      const agoraIso = new Date().toISOString();
+      localStorage.setItem("treino_iniciado_em", agoraIso);
+      setIniciadoEm(agoraIso);
       toast.sucesso(`Treino ${sugestaoHoje.sugerido.nome} iniciado!`);
       recarregar();
     } catch (e) {
@@ -247,13 +220,21 @@ export default function Sessao() {
     }
   };
 
+  const iniciarTreino = () => {
+    const agoraIso = new Date().toISOString();
+    localStorage.setItem("treino_iniciado_em", agoraIso);
+    setIniciadoEm(agoraIso);
+    toast.sucesso("Treino iniciado! Registre ao concluir. 💪");
+  };
+
   const recomecar = async () => {
     setReiniciando(true);
     try {
       await reiniciar();
-      setTempoSegundos(0);
+      localStorage.removeItem("treino_iniciado_em");
+      setIniciadoEm(null);
       setSeriesState({});
-      toast.sucesso("Treino reiniciado. Bom treino!");
+      toast.sucesso("Treino reiniciado. Clique em 'Iniciar treino' quando começar!");
     } catch (e) {
       toast.erro((e as Error).message);
     } finally {
@@ -261,22 +242,19 @@ export default function Sessao() {
     }
   };
 
-  const formatarCronometro = (segundos: number) => {
-    const mins = Math.floor(segundos / 60);
-    const segs = segundos % 60;
-    return `${mins}:${String(segs).padStart(2, "0")}`;
-  };
-
   const salvarNoHistorico = async () => {
     setFinalizando(true);
     try {
       const hojeIso = new Date().toISOString().split("T")[0];
-      const duracaoMin = Math.max(1, Math.round(tempoSegundos / 60));
+      const fim = new Date();
+      const duracaoMin = iniciadoEm ? calcularIntervaloMinutos(iniciadoEm, fim) : 1;
 
       const payload = {
         nome: "Treino do dia",
         data: hojeIso,
         duracao_min: duracaoMin,
+        iniciado_em: iniciadoEm,
+        finalizado_em: fim.toISOString(),
         limpar_exercicios_atuais: limparAoConcluir,
         exercicios: exercicios.map((ex, ordem) => {
           const series = obterSeries(ex).map((s: SerieItem) => ({
@@ -300,6 +278,8 @@ export default function Sessao() {
       };
 
       await sessoesApi.concluir(payload);
+      localStorage.removeItem("treino_iniciado_em");
+      setIniciadoEm(null);
       toast.sucesso("Treino registrado no histórico! Sequência mantida! 🔥");
       setModalConcluir(false);
       navigate("/historico");
@@ -318,23 +298,11 @@ export default function Sessao() {
           <p>{dataDeHoje()}</p>
         </div>
         <div className="header-acoes">
-          {tempoSegundos > 0 && (
-            <span className="cronometro-badge" title="Tempo decorrido">
-              <i className="bi bi-stopwatch" /> {formatarCronometro(tempoSegundos)}
+          {iniciadoEm && (
+            <span className="treino-em-andamento-badge" title="Horário em que o treino foi iniciado">
+              <i className="bi bi-play-circle-fill" /> Iniciado às {formatarHora(iniciadoEm)}
             </span>
           )}
-          <button
-            type="button"
-            className={`icon-btn ${descansoSegundos !== null ? "icon-btn--ativo" : ""}`}
-            onClick={() => setModalDescanso(true)}
-            aria-label="Temporizador de descanso"
-            title="Descanso entre séries"
-          >
-            <i className="bi bi-hourglass-split" />
-            {descansoSegundos !== null && (
-              <span className="descanso-contador">{descansoSegundos}s</span>
-            )}
-          </button>
           <Link
             to="/historico"
             className="icon-btn"
@@ -425,13 +393,22 @@ export default function Sessao() {
             </div>
           </section>
 
-          {/* Botão de Finalizar e Salvar no Histórico */}
-          {feitos > 0 && (
+          {/* Botão de Iniciar ou Registrar Treino */}
+          {!iniciadoEm ? (
             <button
+              type="button"
+              className="btn btn--primary btn--block btn--iniciar-treino"
+              onClick={iniciarTreino}
+            >
+              <i className="bi bi-play-fill" /> Iniciar treino
+            </button>
+          ) : (
+            <button
+              type="button"
               className="btn btn--primary btn--block btn--finalizar"
               onClick={() => setModalConcluir(true)}
             >
-              <i className="bi bi-check2-all" /> Finalizar treino e salvar histórico
+              <i className="bi bi-check2-all" /> Registrar treino
             </button>
           )}
 
@@ -577,20 +554,24 @@ export default function Sessao() {
         </>
       )}
 
-      {/* Modal de Finalizar Treino e Salvar no Histórico */}
+      {/* Modal de Finalizar e Registrar Treino no Histórico */}
       {modalConcluir && (
-        <Modal titulo="Finalizar treino 🎉" onFechar={() => setModalConcluir(false)}>
+        <Modal titulo="Registrar treino 🎉" onFechar={() => setModalConcluir(false)}>
           <div className="modal-finalizar">
             <p className="modal-finalizar__msg">
-              Ótimo treino! Deseja salvar este registro no seu histórico para manter sua ofensiva ativa?
+              Ótimo treino! Deseja registrar este treino no seu histórico para manter sua ofensiva ativa?
             </p>
 
             <div className="modal-finalizar__resumo-box">
               <div className="resumo-box__item">
-                <i className="bi bi-stopwatch" />
+                <i className="bi bi-clock-history" />
                 <div>
-                  <strong>{Math.max(1, Math.round(tempoSegundos / 60))} min</strong>
-                  <span>Duração</span>
+                  <strong>{iniciadoEm ? calcularIntervaloMinutos(iniciadoEm) : 1} min</strong>
+                  <span>
+                    {iniciadoEm
+                      ? `Intervalo (${formatarHora(iniciadoEm)} às ${formatarHora(new Date())})`
+                      : "Duração calculada"}
+                  </span>
                 </div>
               </div>
               <div className="resumo-box__item">
@@ -626,55 +607,9 @@ export default function Sessao() {
                 onClick={salvarNoHistorico}
                 disabled={finalizando}
               >
-                {finalizando ? "Salvando…" : "Salvar no histórico"}
+                {finalizando ? "Registrando…" : "Registrar treino"}
               </button>
             </div>
-          </div>
-        </Modal>
-      )}
-
-      {/* Modal de Timer de Descanso Rápido */}
-      {modalDescanso && (
-        <Modal titulo="⏱️ Temporizador de Descanso" onFechar={() => setModalDescanso(false)}>
-          <div className="descanso-modal">
-            {descansoSegundos !== null ? (
-              <div className="descanso-ativo">
-                <span className="descanso-tempo">{descansoSegundos}s</span>
-                <p>Descansando... Respire e prepare-se para a próxima série.</p>
-                <div className="descanso-botoes">
-                  <button
-                    className="btn btn--ghost btn--sm"
-                    onClick={() => setDescansoSegundos((s) => (s ?? 0) + 30)}
-                  >
-                    +30s
-                  </button>
-                  <button
-                    className="btn btn--danger btn--sm"
-                    onClick={() => setDescansoSegundos(null)}
-                  >
-                    Parar
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="descanso-opcoes">
-                <p>Escolha o tempo de descanso entre séries:</p>
-                <div className="descanso-grid">
-                  {[30, 45, 60, 90, 120].map((tempo) => (
-                    <button
-                      key={tempo}
-                      className="btn btn--ghost"
-                      onClick={() => {
-                        setDescansoSegundos(tempo);
-                        setModalDescanso(false);
-                      }}
-                    >
-                      {tempo} segundos
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </Modal>
       )}
