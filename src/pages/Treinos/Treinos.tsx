@@ -367,14 +367,6 @@ export default function Treinos() {
                   <div className="exercicio__acoes">
                     <button
                       className="icon-btn"
-                      onClick={() => setVisualizando(treino)}
-                      aria-label={`Visualizar exercícios de ${treino.nome}`}
-                      title="Visualizar prévia dos exercícios"
-                    >
-                      <i className="bi bi-eye" />
-                    </button>
-                    <button
-                      className="icon-btn"
                       onClick={() => abrirCompartilhar(treino)}
                       disabled={gerandoCodigo === treino.id}
                       aria-label={`Compartilhar ${treino.nome} por link ou QR Code`}
