@@ -3,7 +3,7 @@ import { ToastContext } from "./toastContext";
 
 interface Toast {
   id: number;
-  tipo: "sucesso" | "erro";
+  tipo: "sucesso" | "erro" | "info";
   mensagem: string;
 }
 
@@ -21,6 +21,7 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
     () => ({
       sucesso: (m: string) => adicionar("sucesso", m),
       erro: (m: string) => adicionar("erro", m),
+      info: (m: string) => adicionar("info", m),
     }),
     [adicionar],
   );
@@ -32,7 +33,13 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((t) => (
           <div key={t.id} className={`toast toast--${t.tipo}`}>
             <i
-              className={`bi ${t.tipo === "sucesso" ? "bi-check-circle-fill" : "bi-exclamation-circle-fill"}`}
+              className={`bi ${
+                t.tipo === "sucesso"
+                  ? "bi-check-circle-fill"
+                  : t.tipo === "erro"
+                  ? "bi-exclamation-circle-fill"
+                  : "bi-info-circle-fill"
+              }`}
             />
             {t.mensagem}
           </div>

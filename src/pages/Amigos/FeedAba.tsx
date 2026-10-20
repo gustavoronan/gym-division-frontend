@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../../components/Auth/authContext";
 import { ErroEstado, ListaSkeleton, VazioEstado } from "../../components/States/States";
 import { useToast } from "../../components/Toast/toastContext";
 import { feedApi } from "../../services/api";
@@ -24,12 +25,16 @@ function formatarDataHora(iso: string) {
 }
 
 export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void }) {
+  const { usuario } = useAuth();
   const toast = useToast();
   const [itens, setItens] = useState<FeedItem[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [tentativa, setTentativa] = useState(0);
   const [reagindoId, setReagindoId] = useState<number | null>(null);
+  const [expandirComentarios, setExpandirComentarios] = useState<Record<number, boolean>>({});
+  const [comentarioTexto, setComentarioTexto] = useState<Record<number, string>>({});
+  const [enviandoComentarioId, setEnviandoComentarioId] = useState<number | null>(null);
 
   const carregar = () => {
     setCarregando(true);
@@ -103,6 +108,69 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
       carregar();
     } finally {
       setReagindoId(null);
+    }
+  };
+
+  const alternarComentarios = (sessaoId: number) => {
+    setExpandirComentarios((prev) => ({
+      ...prev,
+      [sessaoId]: !prev[sessaoId],
+    }));
+  };
+
+  const enviarComentario = async (sessaoId: number) => {
+    const texto = (comentarioTexto[sessaoId] || "").trim();
+    if (!texto) return;
+
+    if (!usuario.is_staff) {
+      toast.info(
+        "A funcionalidade de comentários está liberada exclusivamente para administradores durante a fase de testes.",
+      );
+      return;
+    }
+
+    setEnviandoComentarioId(sessaoId);
+    try {
+      const novoComentario = await feedApi.comentar(sessaoId, texto);
+      setItens((anteriores) => {
+        if (!anteriores) return anteriores;
+        return anteriores.map((item) => {
+          if (item.id !== sessaoId) return item;
+          const atuais = item.comentarios || [];
+          return {
+            ...item,
+            comentarios: [...atuais, novoComentario],
+            total_comentarios: (item.total_comentarios ?? atuais.length) + 1,
+          };
+        });
+      });
+      setComentarioTexto((prev) => ({ ...prev, [sessaoId]: "" }));
+      toast.sucesso("Comentário publicado! 💪");
+    } catch (e) {
+      toast.erro((e as Error).message || "Erro ao enviar comentário.");
+    } finally {
+      setEnviandoComentarioId(null);
+    }
+  };
+
+  const excluirComentario = async (sessaoId: number, comentarioId: number) => {
+    try {
+      await feedApi.excluirComentario(comentarioId);
+      setItens((anteriores) => {
+        if (!anteriores) return anteriores;
+        return anteriores.map((item) => {
+          if (item.id !== sessaoId) return item;
+          const filtrados = (item.comentarios || []).filter((c) => c.id !== comentarioId);
+          return {
+            ...item,
+            comentarios: filtrados,
+            total_comentarios: Math.max(0, (item.total_comentarios ?? 1) - 1),
+          };
+        });
+      });
+      toast.sucesso("Comentário excluído.");
+    } catch (e) {
+      toast.erro((e as Error).message || "Erro ao excluir comentário.");
     }
   };
 
@@ -191,6 +259,21 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
                       </button>
                     );
                   })}
+
+                  <button
+                    type="button"
+                    className={`feed-reacao-btn feed-reacao-btn--comentar ${
+                      expandirComentarios[item.id] ? "feed-reacao-btn--ativo" : ""
+                    }`}
+                    onClick={() => alternarComentarios(item.id)}
+                    title="Comentários de incentivo"
+                    aria-expanded={Boolean(expandirComentarios[item.id])}
+                  >
+                    <span className="feed-reacao-btn__emoji">💬</span>
+                    <span className="feed-reacao-btn__contador">
+                      {item.total_comentarios ?? item.comentarios?.length ?? 0}
+                    </span>
+                  </button>
                 </div>
 
                 {item.reacoes_detalhes && item.reacoes_detalhes.length > 0 && (
@@ -203,6 +286,110 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
                   </span>
                 )}
               </footer>
+
+              {/* Seção de comentários expandida */}
+              {expandirComentarios[item.id] && (
+                <div className="feed-comentarios-secao">
+                  {item.comentarios && item.comentarios.length > 0 ? (
+                    <ul className="feed-comentarios-lista">
+                      {item.comentarios.map((c) => (
+                        <li key={c.id} className="feed-comentario-item">
+                          <div className="feed-comentario-item__avatar">
+                            {(c.usuario.first_name || c.usuario.username || "?")[0].toUpperCase()}
+                          </div>
+                          <div className="feed-comentario-item__corpo">
+                            <div className="feed-comentario-item__cabecalho">
+                              <strong>{c.usuario.first_name || c.usuario.username}</strong>
+                              <time>{formatarDataHora(c.criado_em)}</time>
+                              {c.pode_excluir && (
+                                <button
+                                  type="button"
+                                  className="feed-comentario-item__excluir"
+                                  onClick={() => excluirComentario(item.id, c.id)}
+                                  title="Excluir comentário"
+                                >
+                                  <i className="bi bi-trash3" />
+                                </button>
+                              )}
+                            </div>
+                            <p className="feed-comentario-item__texto">{c.texto}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="feed-comentarios-vazio">
+                      Nenhum comentário ainda. Deixe um incentivo para seu parceiro de treino!
+                    </p>
+                  )}
+
+                  {/* Form de comentário para admin ou bloqueio para não-admin */}
+                  {usuario.is_staff ? (
+                    <form
+                      className="feed-comentario-form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        enviarComentario(item.id);
+                      }}
+                    >
+                      <div className="feed-comentario-atalhos">
+                        {["💪 Monstro!", "🔥 Voando!", "👏 Parabéns!", "🚀 Carga insana!", "💯 Foco total"].map(
+                          (chip) => (
+                            <button
+                              key={chip}
+                              type="button"
+                              className="feed-chip-incentivo"
+                              onClick={() =>
+                                setComentarioTexto((prev) => ({
+                                  ...prev,
+                                  [item.id]: (prev[item.id] ? prev[item.id] + " " : "") + chip,
+                                }))
+                              }
+                            >
+                              {chip}
+                            </button>
+                          ),
+                        )}
+                      </div>
+
+                      <div className="feed-comentario-input-box">
+                        <input
+                          type="text"
+                          placeholder="Comentar com incentivo (ex.: Boa monstro! 💪)…"
+                          maxLength={300}
+                          value={comentarioTexto[item.id] || ""}
+                          onChange={(e) =>
+                            setComentarioTexto((prev) => ({
+                              ...prev,
+                              [item.id]: e.target.value,
+                            }))
+                          }
+                        />
+                        <button
+                          type="submit"
+                          className="btn btn--primary btn--sm feed-comentario-enviar-btn"
+                          disabled={
+                            enviandoComentarioId === item.id ||
+                            !(comentarioTexto[item.id] || "").trim()
+                          }
+                        >
+                          <i className="bi bi-send-fill" />
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="feed-comentario-bloqueado">
+                      <div className="feed-comentario-bloqueado__badge">
+                        <i className="bi bi-lock-fill" />
+                        <span>Comentários exclusivos para Administrador</span>
+                      </div>
+                      <p>
+                        A funcionalidade de comentários nos treinos está aberta para teste de administradores.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </li>
           );
         })}

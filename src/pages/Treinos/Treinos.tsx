@@ -182,6 +182,7 @@ export default function Treinos() {
     try {
       await treinosApi.iniciar(treino.id, substituir);
       localStorage.setItem("treino_iniciado_em", new Date().toISOString());
+      localStorage.setItem("treino_iniciado_nome", treino.nome);
       toast.sucesso(`${treino.nome} iniciado. Bom treino!`);
       navigate("/sessao");
     } catch (e) {

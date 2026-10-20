@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../components/Auth/authContext";
 import GifExercicio from "../../components/GifExercicio/GifExercicio";
 import Modal from "../../components/Modal/Modal";
 import ProgressRing from "../../components/ProgressRing/ProgressRing";
+import StoryImediatoModal, {
+  type StoryImediatoDados,
+} from "../../components/StoryImediato/StoryImediatoModal";
 import {
   ErroEstado,
   ListaSkeleton,
@@ -73,6 +77,13 @@ export default function Sessao() {
     sugerido: Treino | null;
     nome_dia: string;
   } | null>(null);
+
+  const { usuario } = useAuth();
+  const [nomeTreino, setNomeTreino] = useState<string>(
+    () => localStorage.getItem("treino_iniciado_nome") || "Treino do dia",
+  );
+  const [modalStory, setModalStory] = useState(false);
+  const [storyDados, setStoryDados] = useState<StoryImediatoDados | null>(null);
 
   // Momento em que o usuário clicou em "Iniciar treino"
   const [iniciadoEm, setIniciadoEm] = useState<string | null>(() =>
@@ -210,6 +221,8 @@ export default function Sessao() {
       await treinosApi.iniciar(sugestaoHoje.sugerido.id, true);
       const agoraIso = new Date().toISOString();
       localStorage.setItem("treino_iniciado_em", agoraIso);
+      localStorage.setItem("treino_iniciado_nome", sugestaoHoje.sugerido.nome);
+      setNomeTreino(sugestaoHoje.sugerido.nome);
       setIniciadoEm(agoraIso);
       toast.sucesso(`Treino ${sugestaoHoje.sugerido.nome} iniciado!`);
       recarregar();
@@ -232,6 +245,8 @@ export default function Sessao() {
     try {
       await reiniciar();
       localStorage.removeItem("treino_iniciado_em");
+      localStorage.removeItem("treino_iniciado_nome");
+      setNomeTreino("Treino do dia");
       setIniciadoEm(null);
       setSeriesState({});
       toast.sucesso("Treino reiniciado. Clique em 'Iniciar treino' quando começar!");
@@ -242,15 +257,49 @@ export default function Sessao() {
     }
   };
 
-  const salvarNoHistorico = async () => {
+  const salvarNoHistorico = async (abrirStory = false) => {
     setFinalizando(true);
     try {
       const hojeIso = new Date().toISOString().split("T")[0];
       const fim = new Date();
       const duracaoMin = iniciadoEm ? calcularIntervaloMinutos(iniciadoEm, fim) : 1;
 
+      // Calcula volume e séries detalhadas para a história e Story 9:16
+      let volumeTotal = 0;
+      let totalSeriesFeitas = 0;
+      const destaques: Array<{ nome: string; series: number; cargaMax: number | null }> = [];
+
+      exercicios.forEach((ex) => {
+        const series = obterSeries(ex);
+        let exSeriesFeitas = 0;
+        let exCargaMax: number | null = null;
+
+        series.forEach((s) => {
+          if (s.concluida) {
+            exSeriesFeitas++;
+            totalSeriesFeitas++;
+            const c = Number(s.carga) || 0;
+            const r = Number(s.repeticoes) || 0;
+            volumeTotal += c * r;
+            if (c > (exCargaMax ?? 0)) {
+              exCargaMax = c;
+            }
+          }
+        });
+
+        if (exSeriesFeitas > 0) {
+          destaques.push({
+            nome: ex.nome,
+            series: exSeriesFeitas,
+            cargaMax: exCargaMax,
+          });
+        }
+      });
+
+      const nomeFinal = nomeTreino.trim() || "Treino do dia";
+
       const payload = {
-        nome: "Treino do dia",
+        nome: nomeFinal,
         data: hojeIso,
         duracao_min: duracaoMin,
         iniciado_em: iniciadoEm,
@@ -279,10 +328,29 @@ export default function Sessao() {
 
       await sessoesApi.concluir(payload);
       localStorage.removeItem("treino_iniciado_em");
+      localStorage.removeItem("treino_iniciado_nome");
       setIniciadoEm(null);
       toast.sucesso("Treino registrado no histórico! Sequência mantida! 🔥");
       setModalConcluir(false);
-      navigate("/historico");
+
+      if (abrirStory && usuario.is_staff) {
+        // ADMIN clicou em Compartilhar: Apresenta o Story 9:16 Imediato
+        setStoryDados({
+          nomeTreino: nomeFinal,
+          duracaoMin,
+          volumeTotalKg: Math.round(volumeTotal),
+          totalSeries: totalSeriesFeitas || feitos * 3,
+          totalExercicios: destaques.length || total,
+          exerciciosDestaque: destaques,
+          dataTreino: hojeIso,
+          nomeUsuario: usuario.first_name,
+          username: usuario.username,
+        });
+        setModalStory(true);
+      } else {
+        // Segue o fluxo padrão direto para o histórico
+        navigate("/historico");
+      }
     } catch (e) {
       toast.erro((e as Error).message);
     } finally {
@@ -580,6 +648,41 @@ export default function Sessao() {
               </div>
             </div>
 
+            <label className="field" style={{ margin: "10px 0" }}>
+              <span>Nome do treino</span>
+              <input
+                value={nomeTreino}
+                maxLength={60}
+                onChange={(e) => setNomeTreino(e.target.value)}
+                placeholder="Ex.: Treino de Perna, Superiores A..."
+              />
+            </label>
+
+            {/* Banner simplificado: Registre no story seu treino com botão à parte de compartilhar */}
+            {usuario.is_staff ? (
+              <div className="story-admin-banner story-admin-banner--liberado story-banner-com-botao">
+                <div className="story-banner-com-botao__info">
+                  <i className="bi bi-instagram" />
+                  <span>Registre no story seu treino</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn--secondary btn--sm story-banner-com-botao__btn"
+                  onClick={() => salvarNoHistorico(true)}
+                  disabled={finalizando}
+                >
+                  <i className="bi bi-share" /> Compartilhar
+                </button>
+              </div>
+            ) : (
+              <div className="story-admin-banner story-admin-banner--bloqueado story-banner-com-botao">
+                <div className="story-banner-com-botao__info">
+                  <i className="bi bi-lock-fill" />
+                  <span>Registre no story seu treino (Exclusivo Admin)</span>
+                </div>
+              </div>
+            )}
+
             <label className="check" style={{ margin: "14px 0" }}>
               <input
                 type="checkbox"
@@ -601,7 +704,7 @@ export default function Sessao() {
               <button
                 type="button"
                 className="btn btn--primary"
-                onClick={salvarNoHistorico}
+                onClick={() => salvarNoHistorico(false)}
                 disabled={finalizando}
               >
                 {finalizando ? "Registrando…" : "Registrar treino"}
@@ -609,6 +712,22 @@ export default function Sessao() {
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* Modal de Story Imediato (Instagram 9:16) */}
+      {modalStory && storyDados && (
+        <StoryImediatoModal
+          aberto={modalStory}
+          dados={storyDados}
+          onFechar={() => {
+            setModalStory(false);
+            navigate("/historico");
+          }}
+          aoIrParaHistorico={() => {
+            setModalStory(false);
+            navigate("/historico");
+          }}
+        />
       )}
     </>
   );

@@ -30,6 +30,14 @@ export interface FeedItemExercicio {
   max_carga: number | null;
 }
 
+export interface FeedComentario {
+  id: number;
+  usuario: Pessoa;
+  texto: string;
+  criado_em: string;
+  pode_excluir: boolean;
+}
+
 export interface FeedItem {
   id: number;
   usuario: Pessoa;
@@ -43,6 +51,8 @@ export interface FeedItem {
   reacoes: Record<string, number>;
   minhas_reacoes: string[];
   reacoes_detalhes: Array<{ emoji: string; usuario: Pessoa }>;
+  comentarios?: FeedComentario[];
+  total_comentarios?: number;
 }
 
 export interface RankingItem {

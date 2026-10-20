@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../components/Auth/authContext";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ConquistasModal from "../../components/Conquistas/ConquistasModal";
 import ResumoMesModal from "../../components/ResumoMes/ResumoMesModal";
+import StoryImediatoModal, {
+  type StoryImediatoDados,
+} from "../../components/StoryImediato/StoryImediatoModal";
 import {
   ErroEstado,
   ListaSkeleton,
@@ -38,9 +42,62 @@ export default function Historico() {
   const [tentativa, setTentativa] = useState(0);
   const [expandidoId, setExpandidoId] = useState<number | null>(null);
   const [removendo, setRemovendo] = useState<SessaoTreino | null>(null);
+  const { usuario } = useAuth();
   const [modalConquistas, setModalConquistas] = useState(false);
   const [modalResumoStory, setModalResumoStory] = useState(false);
   const [modoStory, setModoStory] = useState<"semana" | "mes">("semana");
+  const [storySessao, setStorySessao] = useState<StoryImediatoDados | null>(null);
+
+  const abrirStoryDaSessao = (sessao: SessaoTreino) => {
+    let volumeTotal = 0;
+    let totalSeries = 0;
+    const destaques: Array<{ nome: string; series: number; cargaMax: number | null }> = [];
+
+    sessao.exercicios.forEach((ex) => {
+      let seriesFeitas = 0;
+      let cargaMax: number | null = null;
+      if (ex.series && ex.series.length > 0) {
+        ex.series.forEach((s) => {
+          if (s.concluida) {
+            seriesFeitas++;
+            totalSeries++;
+            const c = Number(s.carga) || 0;
+            const r = Number(s.repeticoes) || 0;
+            volumeTotal += c * r;
+            if (c > (cargaMax ?? 0)) {
+              cargaMax = c;
+            }
+          }
+        });
+      } else {
+        seriesFeitas = ex.series_planejadas;
+        totalSeries += ex.series_planejadas;
+        const c = Number(ex.carga) || 0;
+        cargaMax = c;
+        volumeTotal += c * 10 * ex.series_planejadas;
+      }
+
+      if (seriesFeitas > 0) {
+        destaques.push({
+          nome: ex.nome,
+          series: seriesFeitas,
+          cargaMax,
+        });
+      }
+    });
+
+    setStorySessao({
+      nomeTreino: sessao.nome,
+      duracaoMin: sessao.duracao_min || 45,
+      volumeTotalKg: Math.round(volumeTotal),
+      totalSeries: totalSeries || sessao.total_exercicios * 3,
+      totalExercicios: sessao.total_exercicios,
+      exerciciosDestaque: destaques,
+      dataTreino: sessao.data,
+      nomeUsuario: usuario.first_name,
+      username: usuario.username,
+    });
+  };
 
   useEffect(() => {
     let ativo = true;
@@ -263,6 +320,29 @@ export default function Historico() {
                       </ul>
 
                       <div className="sessao-historico__acoes">
+                        {usuario.is_staff ? (
+                          <button
+                            type="button"
+                            className="btn btn--secondary btn--sm"
+                            onClick={() => abrirStoryDaSessao(sessao)}
+                          >
+                            <i className="bi bi-instagram" /> Story 9:16
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn--ghost btn--sm"
+                            style={{ opacity: 0.6 }}
+                            onClick={() =>
+                              toast.info(
+                                "Geração de Story 9:16 pós-treino exclusiva para administradores nesta fase de testes.",
+                              )
+                            }
+                            title="Recurso exclusivo para administradores"
+                          >
+                            <i className="bi bi-lock-fill" /> Story 9:16
+                          </button>
+                        )}
                         <button
                           type="button"
                           className="btn btn--ghost btn--sm"
@@ -303,6 +383,14 @@ export default function Historico() {
           aberto={modalResumoStory}
           modoInicial={modoStory}
           onFechar={() => setModalResumoStory(false)}
+        />
+      )}
+
+      {storySessao && (
+        <StoryImediatoModal
+          aberto={Boolean(storySessao)}
+          dados={storySessao}
+          onFechar={() => setStorySessao(null)}
         />
       )}
     </>

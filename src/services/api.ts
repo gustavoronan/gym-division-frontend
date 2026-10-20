@@ -14,6 +14,7 @@ import type {
   Amizade,
   Desafio,
   DesafioProgresso,
+  FeedComentario,
   FeedItem,
   RankingSemanal,
   TreinoCompartilhado,
@@ -333,6 +334,19 @@ export const feedApi = {
     }>(`/sessoes/${sessaoId}/reagir/`, {
       method: "POST",
       body: JSON.stringify({ emoji }),
+    });
+  },
+
+  comentar(sessaoId: number, texto: string) {
+    return request<FeedComentario>(`/sessoes/${sessaoId}/comentarios/`, {
+      method: "POST",
+      body: JSON.stringify({ texto }),
+    });
+  },
+
+  excluirComentario(comentarioId: number) {
+    return request<void>(`/comentarios/${comentarioId}/`, {
+      method: "DELETE",
     });
   },
 };
