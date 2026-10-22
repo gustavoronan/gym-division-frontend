@@ -268,7 +268,8 @@ export default function Treinos() {
           </div>
           <div className="banner-sugestao__conteudo">
             <span className="banner-sugestao__tag">
-              💡 Sugestão para hoje ({nomeHoje})
+              <i className="bi bi-lightbulb-fill" style={{ color: "var(--accent)", marginRight: 6 }} />
+              Sugestão para hoje ({nomeHoje})
             </span>
             <strong>{sugeridoHoje.nome}</strong>
             <p>

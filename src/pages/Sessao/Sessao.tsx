@@ -237,7 +237,7 @@ export default function Sessao() {
     const agoraIso = new Date().toISOString();
     localStorage.setItem("treino_iniciado_em", agoraIso);
     setIniciadoEm(agoraIso);
-    toast.sucesso("Treino iniciado! Registre ao concluir. 💪");
+    toast.sucesso("Treino iniciado! Registre ao concluir.");
   };
 
   const recomecar = async () => {
@@ -330,7 +330,7 @@ export default function Sessao() {
       localStorage.removeItem("treino_iniciado_em");
       localStorage.removeItem("treino_iniciado_nome");
       setIniciadoEm(null);
-      toast.sucesso("Treino registrado no histórico! Sequência mantida! 🔥");
+      toast.sucesso("Treino registrado no histórico! Sequência mantida!");
       setModalConcluir(false);
 
       if (abrirStory && usuario.is_staff) {
@@ -395,7 +395,8 @@ export default function Sessao() {
               </div>
               <div className="banner-sugestao__conteudo">
                 <span className="banner-sugestao__tag">
-                  💡 Sugestão para hoje ({sugestaoHoje.nome_dia})
+                  <i className="bi bi-lightbulb-fill" style={{ color: "var(--accent)", marginRight: 6 }} />
+                  Sugestão para hoje ({sugestaoHoje.nome_dia})
                 </span>
                 <strong>{sugestaoHoje.sugerido.nome}</strong>
                 <p>
@@ -621,7 +622,7 @@ export default function Sessao() {
 
       {/* Modal de Finalizar e Registrar Treino no Histórico */}
       {modalConcluir && (
-        <Modal titulo="Registrar treino 🎉" onFechar={() => setModalConcluir(false)}>
+        <Modal titulo="Registrar treino" onFechar={() => setModalConcluir(false)}>
           <div className="modal-finalizar">
             <p className="modal-finalizar__msg">
               Ótimo treino! Deseja registrar este treino no seu histórico para manter sua ofensiva ativa?

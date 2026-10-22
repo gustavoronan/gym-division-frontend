@@ -139,7 +139,8 @@ export default function TreinoForm({
           })}
         </div>
         <small className="form-dica">
-          💡 Sugestão flexível: se houver imprevistos, você pode trocar ou fazer qualquer treino no dia que preferir.
+          <i className="bi bi-lightbulb-fill" style={{ color: "var(--accent)", marginRight: 4 }} />
+          Sugestão flexível: se houver imprevistos, você pode trocar ou fazer qualquer treino no dia que preferir.
         </small>
       </div>
 

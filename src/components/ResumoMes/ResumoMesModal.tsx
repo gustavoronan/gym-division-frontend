@@ -166,22 +166,22 @@ export default function ResumoMesModal({
 
     if (ehSemana && dadosSemana) {
       texto = [
-        `⚡ Meu Resumo da Semana no Division:`,
-        `💪 ${dadosSemana.total_treinos} treinos realizados (${dadosSemana.dias_treinados} dias)`,
-        `🏋️ ${dadosSemana.volume_formatado} levantados`,
-        dadosSemana.exercicio_favorito ? `⭐ Exercício favorito: ${dadosSemana.exercicio_favorito.nome}` : "",
-        dadosSemana.maior_pr_semana ? `🚀 Recorde da semana: ${dadosSemana.maior_pr_semana.carga} kg no ${dadosSemana.maior_pr_semana.exercicio}` : "",
+        `Meu Resumo da Semana no Division:`,
+        `• ${dadosSemana.total_treinos} treinos realizados (${dadosSemana.dias_treinados} dias)`,
+        `• ${dadosSemana.volume_formatado} levantados`,
+        dadosSemana.exercicio_favorito ? `• Exercício favorito: ${dadosSemana.exercicio_favorito.nome}` : "",
+        dadosSemana.maior_pr_semana ? `• Recorde da semana: ${dadosSemana.maior_pr_semana.carga} kg no ${dadosSemana.maior_pr_semana.exercicio}` : "",
         `#Division #Fitness #SemanaPaga #Treino #Gym`,
       ]
         .filter(Boolean)
         .join("\n");
     } else if (dadosMes) {
       texto = [
-        `⚡ Meu Resumo de ${dadosMes.nome_mes} no Division:`,
-        `💪 ${dadosMes.total_treinos} treinos realizados (${dadosMes.dias_treinados} dias)`,
-        `🏋️ ${dadosMes.volume_formatado} levantados`,
-        dadosMes.exercicio_favorito ? `⭐ Exercício favorito: ${dadosMes.exercicio_favorito.nome}` : "",
-        dadosMes.maior_pr_mes ? `🚀 Recorde do mês: ${dadosMes.maior_pr_mes.carga} kg no ${dadosMes.maior_pr_mes.exercicio}` : "",
+        `Meu Resumo de ${dadosMes.nome_mes} no Division:`,
+        `• ${dadosMes.total_treinos} treinos realizados (${dadosMes.dias_treinados} dias)`,
+        `• ${dadosMes.volume_formatado} levantados`,
+        dadosMes.exercicio_favorito ? `• Exercício favorito: ${dadosMes.exercicio_favorito.nome}` : "",
+        dadosMes.maior_pr_mes ? `• Recorde do mês: ${dadosMes.maior_pr_mes.carga} kg no ${dadosMes.maior_pr_mes.exercicio}` : "",
         `#Division #Fitness #Treino #Gym`,
       ]
         .filter(Boolean)

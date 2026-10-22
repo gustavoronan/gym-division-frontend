@@ -116,7 +116,7 @@ export default function DesafiosAba() {
       const mapped = emojiMap[iconeStr];
       return <i className={`bi ${mapped.icon}`} style={{ color: mapped.cor }} />;
     }
-    return <span>{iconeStr}</span>;
+    return <i className="bi bi-trophy-fill" style={{ color: "var(--accent)" }} />;
   };
 
   return (

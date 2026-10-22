@@ -27,12 +27,6 @@ export default function RankingStoryModal({ dados, criterio, aberto, onFechar }:
 
   if (!aberto) return null;
 
-  const medalhas: Record<number, string> = {
-    1: "🥇",
-    2: "🥈",
-    3: "🥉",
-  };
-
   const itemVoce = dados.ranking.find((item) => item.e_voce);
   const top3 = dados.ranking.slice(0, 3);
   const periodoStr = `${formatarDataCurta(dados.inicio_semana)} a ${formatarDataCurta(dados.fim_semana)}`.toUpperCase();
@@ -98,9 +92,9 @@ export default function RankingStoryModal({ dados, criterio, aberto, onFechar }:
   const copiarLegenda = async () => {
     const lider = dados.ranking[0];
     const texto = [
-      `🏆 Ranking Semanal no Division (${dados.inicio_semana} a ${dados.fim_semana}):`,
-      itemVoce ? `💪 Minha posição: #${itemVoce.posicao} lugar!` : "",
-      lider ? `🥇 Líder da semana: @${lider.usuario.username} (${criterio === "dias" ? `${lider.dias_treinados} dias` : `${lider.volume_total.toLocaleString("pt-BR")} kg`})` : "",
+      `Ranking Semanal no Division (${dados.inicio_semana} a ${dados.fim_semana}):`,
+      itemVoce ? `• Minha posição: #${itemVoce.posicao} lugar` : "",
+      lider ? `• Líder da semana: @${lider.usuario.username} (${criterio === "dias" ? `${lider.dias_treinados} dias` : `${lider.volume_total.toLocaleString("pt-BR")} kg`})` : "",
       `#Division #RankingSemanal #Fitness #Treino #Gym`,
     ]
       .filter(Boolean)

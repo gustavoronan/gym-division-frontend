@@ -48,12 +48,6 @@ export default function RankingAba() {
     };
   }, [criterio, tentativa]);
 
-  const medalhas: Record<number, string> = {
-    1: "🥇",
-    2: "🥈",
-    3: "🥉",
-  };
-
   return (
     <div className="ranking-container">
       {/* Ações e Seletor do Topo */}
@@ -110,7 +104,6 @@ export default function RankingAba() {
       ) : (
         <ul className="ranking-lista">
           {dados.ranking.map((item) => {
-            const medalha = medalhas[item.posicao];
             const nome = nomeDe(item.usuario);
             const ehPrimeiro = item.posicao === 1;
 

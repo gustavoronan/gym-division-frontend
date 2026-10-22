@@ -54,9 +54,9 @@ export default function StoryImediatoModal({
         year: "numeric",
       });
 
-  const legendaTexto = `Treino de ${nomeTreinoLimpo} concluído! ⏱️ ${dados.duracaoMin} min • 🏋️ ${dados.volumeTotalKg.toLocaleString(
+  const legendaTexto = `Treino de ${nomeTreinoLimpo} concluído no Division!\n\n${dados.duracaoMin} min de duração • ${dados.volumeTotalKg.toLocaleString(
     "pt-BR",
-  )} kg de volume total • 🔥 ${dados.totalSeries} séries.\n\nRegistrado com foco no #DivisionApp 💪⚡`;
+  )} kg de volume total • ${dados.totalSeries} séries concluídas.\n\n#DivisionApp #Treino #Hipertrofia #Constancia`;
 
   const copiarLegenda = async () => {
     try {
@@ -124,7 +124,7 @@ export default function StoryImediatoModal({
 
   return (
     <Modal
-      titulo="✨ Story Imediato (Instagram 9:16)"
+      titulo="Story Imediato (Instagram 9:16)"
       onFechar={onFechar}
     >
       <div className="story-imediato-wrapper">

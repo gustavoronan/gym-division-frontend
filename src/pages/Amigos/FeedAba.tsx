@@ -145,7 +145,7 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
         });
       });
       setComentarioTexto((prev) => ({ ...prev, [sessaoId]: "" }));
-      toast.sucesso("Comentário publicado! 💪");
+      toast.sucesso("Comentário publicado!");
     } catch (e) {
       toast.erro((e as Error).message || "Erro ao enviar comentário.");
     } finally {
@@ -190,7 +190,27 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
     );
   }
 
-  const emojis = ["🔥", "💪", "👏"];
+  const REACOES_CONFIG = [
+    { chave: "🔥", icone: "bi-fire", cor: "#ff7828", label: "Fogo" },
+    { chave: "💪", icone: "bi-shield-shaded", cor: "var(--accent)", label: "Força" },
+    { chave: "👏", icone: "bi-hand-thumbs-up-fill", cor: "#38bdf8", label: "Palmas" },
+  ];
+
+  const CHIPS_INCENTIVO = [
+    { icone: "bi-shield-shaded", texto: "Monstro!" },
+    { icone: "bi-fire", texto: "Voando!" },
+    { icone: "bi-award-fill", texto: "Parabéns!" },
+    { icone: "bi-rocket-takeoff-fill", texto: "Carga insana!" },
+    { icone: "bi-lightning-charge-fill", texto: "Foco total!" },
+  ];
+
+  const renderIconeReacao = (chave: string) => {
+    const cfg = REACOES_CONFIG.find((r) => r.chave === chave);
+    if (cfg) {
+      return <i className={`bi ${cfg.icone}`} style={{ color: cfg.cor }} />;
+    }
+    return <i className="bi bi-heart-fill" style={{ color: "var(--accent)" }} />;
+  };
 
   return (
     <div className="feed-container">
@@ -240,19 +260,21 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
 
               <footer className="feed-item__reacoes-barra">
                 <div className="feed-item__botoes-reacao">
-                  {emojis.map((emoji) => {
-                    const contagem = item.reacoes[emoji] || 0;
-                    const ativo = item.minhas_reacoes.includes(emoji);
+                  {REACOES_CONFIG.map((cfg) => {
+                    const contagem = item.reacoes[cfg.chave] || 0;
+                    const ativo = item.minhas_reacoes.includes(cfg.chave);
                     return (
                       <button
-                        key={emoji}
+                        key={cfg.chave}
                         type="button"
                         className={`feed-reacao-btn ${ativo ? "feed-reacao-btn--ativo" : ""}`}
-                        onClick={() => reagir(item.id, emoji)}
-                        title={`Reagir com ${emoji}`}
+                        onClick={() => reagir(item.id, cfg.chave)}
+                        title={`Reagir (${cfg.label})`}
                         aria-pressed={ativo}
                       >
-                        <span className="feed-reacao-btn__emoji">{emoji}</span>
+                        <span className="feed-reacao-btn__emoji">
+                          <i className={`bi ${cfg.icone}`} style={{ color: cfg.cor }} />
+                        </span>
                         {contagem > 0 && (
                           <span className="feed-reacao-btn__contador">{contagem}</span>
                         )}
@@ -269,7 +291,9 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
                     title="Comentários de incentivo"
                     aria-expanded={Boolean(expandirComentarios[item.id])}
                   >
-                    <span className="feed-reacao-btn__emoji">💬</span>
+                    <span className="feed-reacao-btn__emoji">
+                      <i className="bi bi-chat-dots-fill" />
+                    </span>
                     <span className="feed-reacao-btn__contador">
                       {item.total_comentarios ?? item.comentarios?.length ?? 0}
                     </span>
@@ -280,7 +304,7 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
                   <span className="feed-item__quem-reagiu">
                     {item.reacoes_detalhes.map((r, i) => (
                       <span key={i} className="feed-item__reacao-badge">
-                        {r.emoji} {r.usuario.first_name || r.usuario.username}
+                        {renderIconeReacao(r.emoji)} {r.usuario.first_name || r.usuario.username}
                       </span>
                     ))}
                   </span>
@@ -333,29 +357,28 @@ export default function FeedAba({ onIrParaAmigos }: { onIrParaAmigos: () => void
                       }}
                     >
                       <div className="feed-comentario-atalhos">
-                        {["💪 Monstro!", "🔥 Voando!", "👏 Parabéns!", "🚀 Carga insana!", "💯 Foco total"].map(
-                          (chip) => (
-                            <button
-                              key={chip}
-                              type="button"
-                              className="feed-chip-incentivo"
-                              onClick={() =>
-                                setComentarioTexto((prev) => ({
-                                  ...prev,
-                                  [item.id]: (prev[item.id] ? prev[item.id] + " " : "") + chip,
-                                }))
-                              }
-                            >
-                              {chip}
-                            </button>
-                          ),
-                        )}
+                        {CHIPS_INCENTIVO.map((chip) => (
+                          <button
+                            key={chip.texto}
+                            type="button"
+                            className="feed-chip-incentivo"
+                            onClick={() =>
+                              setComentarioTexto((prev) => ({
+                                ...prev,
+                                [item.id]: (prev[item.id] ? prev[item.id] + " " : "") + chip.texto,
+                              }))
+                            }
+                          >
+                            <i className={`bi ${chip.icone}`} style={{ marginRight: 4 }} />
+                            {chip.texto}
+                          </button>
+                        ))}
                       </div>
 
                       <div className="feed-comentario-input-box">
                         <input
                           type="text"
-                          placeholder="Comentar com incentivo (ex.: Boa monstro! 💪)…"
+                          placeholder="Comentar com incentivo (ex.: Boa monstro!)…"
                           maxLength={300}
                           value={comentarioTexto[item.id] || ""}
                           onChange={(e) =>
