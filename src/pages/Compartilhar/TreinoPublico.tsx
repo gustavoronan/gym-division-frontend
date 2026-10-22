@@ -257,7 +257,7 @@ export default function TreinoPublico() {
                       onClick={importar}
                     >
                       <i className="bi bi-box-arrow-in-right" />
-                      Criar Conta Grátis em 15s & Importar
+                      Criar Conta Grátis
                     </button>
                     <span className="treino-publico__convite-sub">
                       Sem cartão de crédito · 100% gratuito
