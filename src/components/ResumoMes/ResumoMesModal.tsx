@@ -369,9 +369,14 @@ export default function ResumoMesModal({
                   </div>
                 )}
 
-                {/* Footer do Story */}
+                {/* Footer do Story com Marca Prominente */}
                 <footer className="resumo-story__footer">
-                  <span>division.app · Treine com consistência</span>
+                  <div className="resumo-story__footer-marca">
+                    <span className="resumo-story__footer-badge">
+                      <i className="bi bi-lightning-charge-fill" /> division.app.br
+                    </span>
+                    <span className="resumo-story__footer-slogan">App de Treino & Evolução</span>
+                  </div>
                 </footer>
               </div>
             </div>

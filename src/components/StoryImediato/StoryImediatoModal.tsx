@@ -242,8 +242,8 @@ export default function StoryImediatoModal({
                 <span>⚡ SOBRECARGA PROGRESSIVA • SEM DESCULPAS</span>
               </div>
               <div className="story-card-brand">
-                <span className="story-card-logo">DIVISION</span>
-                <span className="story-card-tag">#DivisionApp</span>
+                <span className="story-card-logo">⚡ division.app.br</span>
+                <span className="story-card-tag">App de Treino & Evolução</span>
               </div>
             </div>
           </div>

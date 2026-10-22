@@ -7,7 +7,10 @@ interface Props {
 }
 
 export default function Login({ onEntrar }: Props) {
-  const [criando, setCriando] = useState(false);
+  const [temImportPendente] = useState(() =>
+    Boolean(sessionStorage.getItem("division_import_pendente"))
+  );
+  const [criando, setCriando] = useState(() => temImportPendente);
   const [nome, setNome] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +45,20 @@ export default function Login({ onEntrar }: Props) {
           <h1>Division</h1>
           <p>{criando ? "Crie sua conta grátis" : "Entre para acessar seus treinos"}</p>
         </div>
+
+        {temImportPendente && (
+          <div className="login__import-banner">
+            <i className="bi bi-lightning-charge-fill" />
+            <div>
+              <strong>Treino compartilhado pronto!</strong>
+              <span>
+                {criando
+                  ? "Crie sua conta em 15 segundos para salvar o treino na sua ficha."
+                  : "Entre na sua conta para importar o treino imediatamente."}
+              </span>
+            </div>
+          </div>
+        )}
 
         {criando && (
           <label className="field">

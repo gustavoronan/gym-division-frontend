@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import GifExercicio from "../../components/GifExercicio/GifExercicio";
@@ -57,6 +57,23 @@ export default function Treinos() {
     codigo: string;
   } | null>(null);
   const [gerandoCodigo, setGerandoCodigo] = useState<number | null>(null);
+
+  // Se veio de um link público e acabou de se autenticar, importa o treino pendente automaticamente
+  useEffect(() => {
+    const pendente = sessionStorage.getItem("division_import_pendente");
+    if (!pendente) return;
+    sessionStorage.removeItem("division_import_pendente");
+
+    treinosApi
+      .importarCompartilhado(pendente)
+      .then((novoTreino) => {
+        toast.sucesso(`"${novoTreino.nome}" adicionado com sucesso aos seus treinos!`);
+        recarregar();
+      })
+      .catch((e: Error) => {
+        toast.erro(e.message || "Não foi possível importar o treino pendente.");
+      });
+  }, [recarregar, toast]);
 
   // Estados de arrasto e reordenação
   const [arrastandoIndex, setArrastandoIndex] = useState<number | null>(null);
