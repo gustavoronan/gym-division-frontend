@@ -73,6 +73,7 @@ export default function TreinoForm({
   const remover = (chave: number) =>
     setLinhas((ls) => ls.filter((l) => l.chave !== chave));
 
+  
   const importar = () =>
     setLinhas((ls) => [
       ...ls.filter((l) => l.nome.trim() !== "" || l.repeticoes.trim() !== ""),
@@ -83,7 +84,7 @@ export default function TreinoForm({
     nome.trim() !== "" &&
     linhas.length > 0 &&
     linhas.every(
-      (l) => l.nome.trim() !== "" && l.repeticoes.trim() !== "" && seriesValidas(l.series),
+     (l) => l.nome.trim() !== "" && l.repeticoes.trim() !== "" && seriesValidas(l.series),
     );
 
   const enviar = async (e: FormEvent) => {
@@ -121,7 +122,7 @@ export default function TreinoForm({
       </label>
 
       <div className="field">
-        <span>Dias sugeridos (planejamento semanal)</span>
+        <span>Dias sugeridos (planejamento da semana)</span>
         <div className="dias-seletor" role="group" aria-label="Dias sugeridos para este treino">
           {DIAS_SEMANA.map((dia) => {
             const selecionado = diasSemana.includes(dia.id);
