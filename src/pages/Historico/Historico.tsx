@@ -155,7 +155,9 @@ export default function Historico() {
       {stats && (
         <section className="historico-metricas">
           <div className="card metrica-card metrica-card--streak">
-            <span className="metrica-card__icone">🔥</span>
+            <span className="metrica-card__icone metrica-card__icone--streak">
+              <i className="bi bi-fire" />
+            </span>
             <div className="metrica-card__info">
               <strong>{stats.streak_atual} {stats.streak_atual === 1 ? "dia" : "dias"}</strong>
               <span>Sequência ativa</span>
@@ -163,7 +165,9 @@ export default function Historico() {
           </div>
 
           <div className="card metrica-card">
-            <span className="metrica-card__icone">🏋️‍♂️</span>
+            <span className="metrica-card__icone metrica-card__icone--treinos">
+              <i className="bi bi-activity" />
+            </span>
             <div className="metrica-card__info">
               <strong>{stats.total_sessoes}</strong>
               <span>Total de treinos</span>
@@ -179,7 +183,9 @@ export default function Historico() {
           className="card atalho-historico-btn"
           onClick={() => setModalConquistas(true)}
         >
-          <span className="atalho-historico-btn__icone">🏆</span>
+          <span className="atalho-historico-btn__icone atalho-historico-btn__icone--conquistas">
+            <i className="bi bi-trophy-fill" />
+          </span>
           <div className="atalho-historico-btn__info">
             <strong>Conquistas & Medalhas</strong>
             <span>Ver suas medalhas e marcos</span>
@@ -195,7 +201,9 @@ export default function Historico() {
             setModalResumoStory(true);
           }}
         >
-          <span className="atalho-historico-btn__icone">⚡</span>
+          <span className="atalho-historico-btn__icone atalho-historico-btn__icone--semana">
+            <i className="bi bi-calendar-week-fill" />
+          </span>
           <div className="atalho-historico-btn__info">
             <strong>Resumo da Semana</strong>
             <span>Card para Instagram Stories</span>
@@ -211,7 +219,9 @@ export default function Historico() {
             setModalResumoStory(true);
           }}
         >
-          <span className="atalho-historico-btn__icone">📸</span>
+          <span className="atalho-historico-btn__icone atalho-historico-btn__icone--mes">
+            <i className="bi bi-calendar-month-fill" />
+          </span>
           <div className="atalho-historico-btn__info">
             <strong>Resumo do Mês</strong>
             <span>Card para Instagram Stories</span>

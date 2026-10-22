@@ -524,7 +524,7 @@ export default function Sessao() {
                         ) : null}
                         {historico?.recorde_carga ? (
                           <span className="tag-recorde" title="Recorde pessoal">
-                            🏆 PR: {historico.recorde_carga} kg
+                            <i className="bi bi-trophy-fill" style={{ marginRight: 3 }} /> PR: {historico.recorde_carga} kg
                           </span>
                         ) : null}
                       </div>

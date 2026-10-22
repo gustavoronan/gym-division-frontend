@@ -305,13 +305,17 @@ export default function ResumoMesModal({
                 {/* Métricas Principais em Grade */}
                 <div className="resumo-story__grid-metricas">
                   <div className="resumo-story__metrica-card">
-                    <span className="resumo-story__metrica-icone">🔥</span>
+                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--fogo">
+                      <i className="bi bi-fire" />
+                    </span>
                     <strong className="resumo-story__metrica-valor">{dados.total_treinos}</strong>
                     <span className="resumo-story__metrica-rotulo">Treinos Feitos</span>
                   </div>
 
                   <div className="resumo-story__metrica-card">
-                    <span className="resumo-story__metrica-icone">🏋️</span>
+                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--volume">
+                      <i className="bi bi-bar-chart-fill" />
+                    </span>
                     <strong className="resumo-story__metrica-valor">
                       {dados.volume_formatado}
                     </strong>
@@ -319,7 +323,9 @@ export default function ResumoMesModal({
                   </div>
 
                   <div className="resumo-story__metrica-card">
-                    <span className="resumo-story__metrica-icone">⏱️</span>
+                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--tempo">
+                      <i className="bi bi-stopwatch-fill" />
+                    </span>
                     <strong className="resumo-story__metrica-valor">
                       {dados.tempo_formatado}
                     </strong>
@@ -327,7 +333,9 @@ export default function ResumoMesModal({
                   </div>
 
                   <div className="resumo-story__metrica-card">
-                    <span className="resumo-story__metrica-icone">📅</span>
+                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--dias">
+                      <i className="bi bi-calendar-check-fill" />
+                    </span>
                     <strong className="resumo-story__metrica-valor">{dados.dias_treinados}</strong>
                     <span className="resumo-story__metrica-rotulo">Dias Ativos</span>
                   </div>
@@ -336,7 +344,9 @@ export default function ResumoMesModal({
                 {/* Destaque: Exercício Favorito */}
                 {dados.exercicio_favorito && (
                   <div className="resumo-story__destaque-box">
-                    <div className="resumo-story__destaque-icone">⭐</div>
+                    <div className="resumo-story__destaque-icone resumo-story__destaque-icone--star">
+                      <i className="bi bi-star-fill" />
+                    </div>
                     <div className="resumo-story__destaque-texto">
                       <span className="resumo-story__destaque-sub">
                         {ehSemana ? "Destaque da Semana" : "Exercício Favorito"}
@@ -356,7 +366,9 @@ export default function ResumoMesModal({
                 {/* Destaque: Maior Recorde */}
                 {maiorPr && (
                   <div className="resumo-story__destaque-box resumo-story__destaque-box--pr">
-                    <div className="resumo-story__destaque-icone">🚀</div>
+                    <div className="resumo-story__destaque-icone resumo-story__destaque-icone--pr">
+                      <i className="bi bi-rocket-takeoff-fill" />
+                    </div>
                     <div className="resumo-story__destaque-texto">
                       <span className="resumo-story__destaque-sub">{labelPr}</span>
                       <strong className="resumo-story__destaque-titulo">

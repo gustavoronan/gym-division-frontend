@@ -19,7 +19,7 @@ export default function DesafiosAba() {
   const [descricao, setDescricao] = useState("");
   const [metaTreinos, setMetaTreinos] = useState(12);
   const [diasDuracao, setDiasDuracao] = useState(30);
-  const [icone, setIcone] = useState("🔥");
+  const [icone, setIcone] = useState("bi-fire");
 
   const [tentativa, setTentativa] = useState(0);
 
@@ -80,14 +80,44 @@ export default function DesafiosAba() {
       setDescricao("");
       setMetaTreinos(12);
       setDiasDuracao(30);
-      setIcone("🔥");
+      setIcone("bi-fire");
       carregar();
     } catch (err) {
       toast.erro((err as Error).message || "Erro ao criar desafio.");
     }
   };
 
-  const iconesOpcoes = ["🔥", "🏆", "⚡", "🎯", "💪", "🥊", "🚀"];
+  const iconesOpcoes = [
+    { id: "bi-fire", label: "Fogo", cor: "#ff7828" },
+    { id: "bi-trophy-fill", label: "Troféu", cor: "#facc15" },
+    { id: "bi-lightning-charge-fill", label: "Raio", cor: "var(--accent)" },
+    { id: "bi-bullseye", label: "Alvo", cor: "#38bdf8" },
+    { id: "bi-activity", label: "Atividade", cor: "#34d399" },
+    { id: "bi-shield-shaded", label: "Escudo", cor: "#a855f7" },
+    { id: "bi-rocket-takeoff-fill", label: "Foguete", cor: "#ec4899" },
+  ];
+
+  const renderIconeDesafio = (iconeStr?: string) => {
+    if (!iconeStr) return <i className="bi bi-fire" style={{ color: "#ff7828" }} />;
+    if (iconeStr.startsWith("bi-")) {
+      const achou = iconesOpcoes.find((o) => o.id === iconeStr);
+      return <i className={`bi ${iconeStr}`} style={{ color: achou?.cor || "var(--accent)" }} />;
+    }
+    const emojiMap: Record<string, { icon: string; cor: string }> = {
+      "🔥": { icon: "bi-fire", cor: "#ff7828" },
+      "🏆": { icon: "bi-trophy-fill", cor: "#facc15" },
+      "⚡": { icon: "bi-lightning-charge-fill", cor: "var(--accent)" },
+      "🎯": { icon: "bi-bullseye", cor: "#38bdf8" },
+      "💪": { icon: "bi-activity", cor: "#34d399" },
+      "🥊": { icon: "bi-shield-shaded", cor: "#a855f7" },
+      "🚀": { icon: "bi-rocket-takeoff-fill", cor: "#ec4899" },
+    };
+    if (emojiMap[iconeStr]) {
+      const mapped = emojiMap[iconeStr];
+      return <i className={`bi ${mapped.icon}`} style={{ color: mapped.cor }} />;
+    }
+    return <span>{iconeStr}</span>;
+  };
 
   return (
     <div className="desafios-container">
@@ -127,7 +157,7 @@ export default function DesafiosAba() {
             return (
               <li key={d.id} className="card desafio-card">
                 <header className="desafio-card__topo">
-                  <div className="desafio-card__icone-caixa">{d.icone || "🔥"}</div>
+                  <div className="desafio-card__icone-caixa">{renderIconeDesafio(d.icone)}</div>
                   <div className="desafio-card__info">
                     <h3 className="desafio-card__titulo">{d.titulo}</h3>
                     {d.descricao && <p className="desafio-card__descricao">{d.descricao}</p>}
@@ -240,12 +270,13 @@ export default function DesafiosAba() {
               <div className="icones-seletor">
                 {iconesOpcoes.map((ic) => (
                   <button
-                    key={ic}
+                    key={ic.id}
                     type="button"
-                    className={`icone-opcao ${icone === ic ? "icone-opcao--selecionado" : ""}`}
-                    onClick={() => setIcone(ic)}
+                    title={ic.label}
+                    className={`icone-opcao ${icone === ic.id ? "icone-opcao--selecionado" : ""}`}
+                    onClick={() => setIcone(ic.id)}
                   >
-                    {ic}
+                    <i className={`bi ${ic.id}`} style={{ color: ic.cor, fontSize: "1.2rem" }} />
                   </button>
                 ))}
               </div>

@@ -11,6 +11,31 @@ interface ConquistasModalProps {
 
 type CategoriaFiltro = "todas" | "treinos" | "streak" | "carga" | "volume" | "social";
 
+const ICONE_CONQUISTA_MAP: Record<string, { icon: string; cor: string }> = {
+  primeiro_treino: { icon: "bi-award-fill", cor: "#f59e0b" },
+  treinos_10: { icon: "bi-bullseye", cor: "#38bdf8" },
+  treinos_25: { icon: "bi-shield-shaded", cor: "#34d399" },
+  treinos_50: { icon: "bi-trophy-fill", cor: "#facc15" },
+  treinos_100: { icon: "bi-crown-fill", cor: "#e879f9" },
+  streak_3: { icon: "bi-fire", cor: "#ff7828" },
+  streak_7: { icon: "bi-lightning-charge-fill", cor: "#c4ff3d" },
+  streak_30: { icon: "bi-gem", cor: "#a855f7" },
+  primeiro_recorde: { icon: "bi-rocket-takeoff-fill", cor: "#c4ff3d" },
+  clube_100kg: { icon: "bi-speedometer2", cor: "#ef4444" },
+  volume_10ton: { icon: "bi-truck", cor: "#38bdf8" },
+  amizade_social: { icon: "bi-people-fill", cor: "#06b6d4" },
+};
+
+function renderIconeConquista(item: ConquistaItem) {
+  const conf = ICONE_CONQUISTA_MAP[item.id];
+  const classeIcone = item.icone && item.icone.startsWith("bi-")
+    ? item.icone
+    : conf?.icon || "bi-award-fill";
+  const corIcone = item.desbloqueada ? (conf?.cor || "var(--accent)") : "var(--muted)";
+
+  return <i className={`bi ${classeIcone}`} style={{ color: corIcone }} />;
+}
+
 export default function ConquistasModal({ aberto, onFechar }: ConquistasModalProps) {
   const [dados, setDados] = useState<ConquistasResponse | null>(null);
   const [carregando, setCarregando] = useState(true);
@@ -93,21 +118,21 @@ export default function ConquistasModal({ aberto, onFechar }: ConquistasModalPro
                 className={`conquista-filtro-btn ${filtro === "treinos" ? "conquista-filtro-btn--ativo" : ""}`}
                 onClick={() => setFiltro("treinos")}
               >
-                Treinos 🏋️
+                <i className="bi bi-activity" /> Treinos
               </button>
               <button
                 type="button"
                 className={`conquista-filtro-btn ${filtro === "streak" ? "conquista-filtro-btn--ativo" : ""}`}
                 onClick={() => setFiltro("streak")}
               >
-                Sequência 🔥
+                <i className="bi bi-fire" /> Sequência
               </button>
               <button
                 type="button"
                 className={`conquista-filtro-btn ${filtro === "carga" ? "conquista-filtro-btn--ativo" : ""}`}
                 onClick={() => setFiltro("carga")}
               >
-                Cargas ⚡
+                <i className="bi bi-lightning-charge-fill" /> Cargas
               </button>
             </div>
 
@@ -121,7 +146,9 @@ export default function ConquistasModal({ aberto, onFechar }: ConquistasModalPro
                   }`}
                 >
                   <div className="conquista-card__icone-container">
-                    <span className="conquista-card__icone">{item.icone}</span>
+                    <span className="conquista-card__icone">
+                      {renderIconeConquista(item)}
+                    </span>
                     {!item.desbloqueada && (
                       <span className="conquista-card__cadeado">
                         <i className="bi bi-lock-fill" />

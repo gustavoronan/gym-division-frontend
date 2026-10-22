@@ -166,7 +166,9 @@ export default function StoryImediatoModal({
               </div>
 
               <div className="story-card-title-box">
-                <span className="story-card-concluido-tag">🔥 MISSÃO CUMPRIDA</span>
+                <span className="story-card-concluido-tag">
+                  <i className="bi bi-check2-circle" /> MISSÃO CUMPRIDA
+                </span>
                 <h1 className="story-card-title">
                   {nomeTreinoLimpo.toUpperCase()} CONCLUÍDO!
                 </h1>
@@ -176,13 +178,17 @@ export default function StoryImediatoModal({
             {/* Metrics Highlights (Duration, Volume, Series) */}
             <div className="story-card-stats-grid">
               <div className="story-stat-card story-stat-card--time">
-                <div className="story-stat-icon">⏱️</div>
+                <div className="story-stat-icon" style={{ color: "#facc15" }}>
+                  <i className="bi bi-stopwatch-fill" />
+                </div>
                 <div className="story-stat-valor">{dados.duracaoMin} min</div>
                 <div className="story-stat-rotulo">Duração</div>
               </div>
 
               <div className="story-stat-card story-stat-card--volume">
-                <div className="story-stat-icon">🏋️</div>
+                <div className="story-stat-icon" style={{ color: "var(--accent)" }}>
+                  <i className="bi bi-bar-chart-fill" />
+                </div>
                 <div className="story-stat-valor">
                   {dados.volumeTotalKg >= 1000
                     ? `${(dados.volumeTotalKg / 1000).toFixed(1)} t`
@@ -194,7 +200,9 @@ export default function StoryImediatoModal({
               </div>
 
               <div className="story-stat-card story-stat-card--series">
-                <div className="story-stat-icon">🔥</div>
+                <div className="story-stat-icon" style={{ color: "#ff7828" }}>
+                  <i className="bi bi-fire" />
+                </div>
                 <div className="story-stat-valor">{dados.totalSeries}</div>
                 <div className="story-stat-rotulo">Séries feitas</div>
               </div>
@@ -239,10 +247,14 @@ export default function StoryImediatoModal({
             {/* Motivational Banner & Footer */}
             <div className="story-card-footer">
               <div className="story-card-streak-pill">
-                <span>⚡ SOBRECARGA PROGRESSIVA • SEM DESCULPAS</span>
+                <span>
+                  <i className="bi bi-lightning-charge-fill" /> SOBRECARGA PROGRESSIVA • SEM DESCULPAS
+                </span>
               </div>
               <div className="story-card-brand">
-                <span className="story-card-logo">⚡ division.app.br</span>
+                <span className="story-card-logo">
+                  <i className="bi bi-lightning-charge-fill" /> division.app.br
+                </span>
                 <span className="story-card-tag">App de Treino & Evolução</span>
               </div>
             </div>

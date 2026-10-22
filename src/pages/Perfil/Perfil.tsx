@@ -79,7 +79,7 @@ export default function Perfil() {
       >
         <div className="link-historico-perfil__info">
           <span className="link-historico-perfil__icone" style={{ background: "rgba(250, 204, 21, 0.15)", color: "#facc15" }}>
-            🏆
+            <i className="bi bi-trophy-fill" />
           </span>
           <div>
             <strong>Conquistas & Medalhas</strong>
@@ -96,7 +96,7 @@ export default function Perfil() {
       >
         <div className="link-historico-perfil__info">
           <span className="link-historico-perfil__icone" style={{ background: "rgba(236, 72, 153, 0.15)", color: "#ec4899" }}>
-            📸
+            <i className="bi bi-instagram" />
           </span>
           <div>
             <strong>Compartilhar Resumo</strong>
@@ -113,7 +113,7 @@ export default function Perfil() {
       >
         <div className="link-historico-perfil__info">
           <span className="link-historico-perfil__icone" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}>
-            📱
+            <i className="bi bi-phone-fill" />
           </span>
           <div>
             <strong>Como Instalar o App</strong>

@@ -122,8 +122,18 @@ export default function RankingAba() {
                 }`}
               >
                 <div className="ranking-card__posicao">
-                  {medalha ? (
-                    <span className="ranking-card__medalha">{medalha}</span>
+                  {item.posicao === 1 ? (
+                    <span className="ranking-card__medalha">
+                      <i className="bi bi-trophy-fill" style={{ color: "#facc15" }} />
+                    </span>
+                  ) : item.posicao === 2 ? (
+                    <span className="ranking-card__medalha">
+                      <i className="bi bi-award-fill" style={{ color: "#cbd5e1" }} />
+                    </span>
+                  ) : item.posicao === 3 ? (
+                    <span className="ranking-card__medalha">
+                      <i className="bi bi-award-fill" style={{ color: "#d97706" }} />
+                    </span>
                   ) : (
                     <span className="ranking-card__numero">#{item.posicao}</span>
                   )}

@@ -141,7 +141,6 @@ export default function RankingStoryModal({ dados, criterio, aberto, onFechar }:
             {/* Pódio / Top 3 */}
             <div className="ranking-story__podio">
               {top3.map((item) => {
-                const medalha = medalhas[item.posicao];
                 const nomeExibicao = item.usuario.first_name || item.usuario.username;
 
                 return (
@@ -151,7 +150,15 @@ export default function RankingStoryModal({ dados, criterio, aberto, onFechar }:
                       item.posicao === 1 ? "ranking-story__podio-item--lider" : ""
                     } ${item.e_voce ? "ranking-story__podio-item--voce" : ""}`}
                   >
-                    <span className="ranking-story__podio-medalha">{medalha}</span>
+                    <span className="ranking-story__podio-medalha">
+                      {item.posicao === 1 ? (
+                        <i className="bi bi-trophy-fill" style={{ color: "#facc15" }} />
+                      ) : item.posicao === 2 ? (
+                        <i className="bi bi-award-fill" style={{ color: "#cbd5e1" }} />
+                      ) : (
+                        <i className="bi bi-award-fill" style={{ color: "#d97706" }} />
+                      )}
+                    </span>
                     <div className="ranking-story__podio-info">
                       <strong className="ranking-story__podio-nome">
                         {nomeExibicao} {item.e_voce && <span className="ranking-story__voce-tag">VOCÊ</span>}
@@ -171,7 +178,13 @@ export default function RankingStoryModal({ dados, criterio, aberto, onFechar }:
             {itemVoce && (
               <div className="ranking-story__voce-box">
                 <div className="ranking-story__voce-icone">
-                  {itemVoce.posicao === 1 ? "🏆" : itemVoce.posicao <= 3 ? "⚡" : "🎯"}
+                  {itemVoce.posicao === 1 ? (
+                    <i className="bi bi-trophy-fill" style={{ color: "#facc15" }} />
+                  ) : itemVoce.posicao <= 3 ? (
+                    <i className="bi bi-lightning-charge-fill" style={{ color: "var(--accent)" }} />
+                  ) : (
+                    <i className="bi bi-bullseye" style={{ color: "#38bdf8" }} />
+                  )}
                 </div>
                 <div className="ranking-story__voce-conteudo">
                   <span className="ranking-story__voce-sub">SUA POSIÇÃO</span>

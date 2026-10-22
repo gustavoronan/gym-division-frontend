@@ -1724,8 +1724,27 @@ button:disabled {
 }
 
 .metrica-card__icone {
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.metrica-card__icone--streak {
+  background: rgba(255, 120, 40, 0.15);
+  border-color: rgba(255, 120, 40, 0.35);
+  color: #ff7828;
+}
+
+.metrica-card__icone--treinos {
+  background: rgba(196, 255, 61, 0.12);
+  border-color: rgba(196, 255, 61, 0.3);
+  color: var(--accent);
 }
 
 .metrica-card__info {
@@ -3080,8 +3099,38 @@ button:disabled {
 }
 
 .atalho-historico-btn__icone {
-  font-size: 1.6rem;
+  font-size: 1.25rem;
   flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease;
+}
+
+.atalho-historico-btn:hover .atalho-historico-btn__icone {
+  transform: scale(1.05);
+}
+
+.atalho-historico-btn__icone--conquistas {
+  background: rgba(250, 204, 21, 0.14);
+  border-color: rgba(250, 204, 21, 0.3);
+  color: #facc15;
+}
+
+.atalho-historico-btn__icone--semana {
+  background: rgba(196, 255, 61, 0.12);
+  border-color: rgba(196, 255, 61, 0.3);
+  color: var(--accent);
+}
+
+.atalho-historico-btn__icone--mes {
+  background: rgba(236, 72, 153, 0.14);
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #ec4899;
 }
 
 .atalho-historico-btn__info {
@@ -3452,7 +3501,34 @@ button:disabled {
 }
 
 .resumo-story__metrica-icone {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  display: grid;
+  place-items: center;
+  margin-bottom: 2px;
+}
+
+.resumo-story__metrica-icone--fogo {
+  color: #ff7828;
+}
+
+.resumo-story__metrica-icone--volume {
+  color: var(--accent);
+}
+
+.resumo-story__metrica-icone--tempo {
+  color: #facc15;
+}
+
+.resumo-story__metrica-icone--dias {
+  color: #38bdf8;
+}
+
+.resumo-story__destaque-icone--star {
+  color: #facc15;
+}
+
+.resumo-story__destaque-icone--pr {
+  color: var(--accent);
 }
 
 .resumo-story__metrica-valor {
@@ -4918,6 +4994,38 @@ body {
   margin: 0;
   color: var(--muted);
   line-height: 1.4;
+}
+
+/* ---------- Seletor de Ícones de Desafio ---------- */
+.icones-seletor {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.icone-opcao {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.icone-opcao:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.icone-opcao--selecionado {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(196, 255, 61, 0.25);
 }
 
 
