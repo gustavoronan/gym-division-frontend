@@ -54,9 +54,7 @@ export default function StoryImediatoModal({
         year: "numeric",
       });
 
-  const legendaTexto = `Treino de ${nomeTreinoLimpo} concluído no Division!\n\n${dados.duracaoMin} min de duração • ${dados.volumeTotalKg.toLocaleString(
-    "pt-BR",
-  )} kg de volume total • ${dados.totalSeries} séries concluídas.\n\n#DivisionApp #Treino #Hipertrofia #Constancia`;
+  const legendaTexto = `Treino de ${nomeTreinoLimpo} concluído no Division!\n\n${dados.duracaoMin} min de duração • ${dados.totalExercicios} exercícios • ${dados.totalSeries} séries concluídas.\n\n#DivisionApp #Treino #Hipertrofia #Constancia`;
 
   const copiarLegenda = async () => {
     try {
@@ -129,7 +127,7 @@ export default function StoryImediatoModal({
     >
       <div className="story-imediato-wrapper">
         <p className="story-imediato-intro">
-          Card exclusivo gerado em tempo real com seu volume, duração e séries.
+          Card exclusivo gerado em tempo real com sua duração, exercícios e séries.
           Pronto para postar nos <strong>Stories do Instagram</strong>!
         </p>
 
@@ -185,18 +183,12 @@ export default function StoryImediatoModal({
                 <div className="story-stat-rotulo">Duração</div>
               </div>
 
-              <div className="story-stat-card story-stat-card--volume">
+              <div className="story-stat-card story-stat-card--exercises">
                 <div className="story-stat-icon" style={{ color: "var(--accent)" }}>
-                  <i className="bi bi-bar-chart-fill" />
+                  <i className="bi bi-check-circle-fill" />
                 </div>
-                <div className="story-stat-valor">
-                  {dados.volumeTotalKg >= 1000
-                    ? `${(dados.volumeTotalKg / 1000).toFixed(1)} t`
-                    : `${dados.volumeTotalKg} kg`}
-                </div>
-                <div className="story-stat-rotulo">
-                  {dados.volumeTotalKg.toLocaleString("pt-BR")} kg vol.
-                </div>
+                <div className="story-stat-valor">{dados.totalExercicios}</div>
+                <div className="story-stat-rotulo">Exercícios</div>
               </div>
 
               <div className="story-stat-card story-stat-card--series">

@@ -168,7 +168,6 @@ export default function ResumoMesModal({
       texto = [
         `Meu Resumo da Semana no Division:`,
         `• ${dadosSemana.total_treinos} treinos realizados (${dadosSemana.dias_treinados} dias)`,
-        `• ${dadosSemana.volume_formatado} levantados`,
         dadosSemana.exercicio_favorito ? `• Exercício favorito: ${dadosSemana.exercicio_favorito.nome}` : "",
         dadosSemana.maior_pr_semana ? `• Recorde da semana: ${dadosSemana.maior_pr_semana.carga} kg no ${dadosSemana.maior_pr_semana.exercicio}` : "",
         `#Division #Fitness #SemanaPaga #Treino #Gym`,
@@ -179,7 +178,6 @@ export default function ResumoMesModal({
       texto = [
         `Meu Resumo de ${dadosMes.nome_mes} no Division:`,
         `• ${dadosMes.total_treinos} treinos realizados (${dadosMes.dias_treinados} dias)`,
-        `• ${dadosMes.volume_formatado} levantados`,
         dadosMes.exercicio_favorito ? `• Exercício favorito: ${dadosMes.exercicio_favorito.nome}` : "",
         dadosMes.maior_pr_mes ? `• Recorde do mês: ${dadosMes.maior_pr_mes.carga} kg no ${dadosMes.maior_pr_mes.exercicio}` : "",
         `#Division #Fitness #Treino #Gym`,
@@ -304,7 +302,7 @@ export default function ResumoMesModal({
 
                 {/* Métricas Principais em Grade */}
                 <div className="resumo-story__grid-metricas">
-                  <div className="resumo-story__metrica-card">
+                  <div className="resumo-story__metrica-card resumo-story__metrica-card--destaque">
                     <span className="resumo-story__metrica-icone resumo-story__metrica-icone--fogo">
                       <i className="bi bi-fire" />
                     </span>
@@ -313,13 +311,11 @@ export default function ResumoMesModal({
                   </div>
 
                   <div className="resumo-story__metrica-card">
-                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--volume">
-                      <i className="bi bi-bar-chart-fill" />
+                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--dias">
+                      <i className="bi bi-calendar-check-fill" />
                     </span>
-                    <strong className="resumo-story__metrica-valor">
-                      {dados.volume_formatado}
-                    </strong>
-                    <span className="resumo-story__metrica-rotulo">Volume Total</span>
+                    <strong className="resumo-story__metrica-valor">{dados.dias_treinados}</strong>
+                    <span className="resumo-story__metrica-rotulo">Dias Ativos</span>
                   </div>
 
                   <div className="resumo-story__metrica-card">
@@ -330,14 +326,6 @@ export default function ResumoMesModal({
                       {dados.tempo_formatado}
                     </strong>
                     <span className="resumo-story__metrica-rotulo">Tempo em Ação</span>
-                  </div>
-
-                  <div className="resumo-story__metrica-card">
-                    <span className="resumo-story__metrica-icone resumo-story__metrica-icone--dias">
-                      <i className="bi bi-calendar-check-fill" />
-                    </span>
-                    <strong className="resumo-story__metrica-valor">{dados.dias_treinados}</strong>
-                    <span className="resumo-story__metrica-rotulo">Dias Ativos</span>
                   </div>
                 </div>
 

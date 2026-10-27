@@ -3500,6 +3500,11 @@ button:disabled {
   text-align: center;
 }
 
+.resumo-story__metrica-card--destaque {
+  grid-column: 1 / -1;
+  padding: 14px 10px;
+}
+
 .resumo-story__metrica-icone {
   font-size: 1.3rem;
   display: grid;
@@ -4531,9 +4536,9 @@ body {
   box-shadow: 0 4px 16px rgba(56, 189, 248, 0.1);
 }
 
-.story-stat-card--volume {
-  border-color: rgba(192, 132, 252, 0.35);
-  box-shadow: 0 4px 16px rgba(192, 132, 252, 0.12);
+.story-stat-card--exercises {
+  border-color: rgba(196, 255, 61, 0.35);
+  box-shadow: 0 4px 16px rgba(196, 255, 61, 0.12);
 }
 
 .story-stat-card--series {

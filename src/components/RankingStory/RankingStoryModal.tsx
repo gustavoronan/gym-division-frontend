@@ -186,7 +186,9 @@ export default function RankingStoryModal({ dados, criterio, aberto, onFechar }:
                     #{itemVoce.posicao} · {itemVoce.posicao === 1 ? "Líder da Semana!" : itemVoce.posicao <= 3 ? "No Pódio!" : "No Ranking!"}
                   </strong>
                   <span className="ranking-story__voce-detalhe">
-                    {itemVoce.dias_treinados} {itemVoce.dias_treinados === 1 ? "dia treinado" : "dias treinados"} · {itemVoce.volume_total.toLocaleString("pt-BR")} kg vol.
+                    {criterio === "dias"
+                      ? `${itemVoce.dias_treinados} ${itemVoce.dias_treinados === 1 ? "dia treinado" : "dias treinados"}`
+                      : `${itemVoce.volume_total.toLocaleString("pt-BR")} kg levantados`}
                   </span>
                 </div>
               </div>
