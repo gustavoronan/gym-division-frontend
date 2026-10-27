@@ -15,6 +15,7 @@ import {
 import { useToast } from "../../components/Toast/toastContext";
 import { sessoesApi } from "../../services/api";
 import type { EstatisticasHistorico, SessaoTreino } from "../../types/exercicio";
+import { parseCargaNumero, parseRepsNumero } from "../Sessao/Sessao";
 
 function formatarDataExtensa(iso: string): string {
   const [ano, mes, dia] = iso.split("-");
@@ -48,6 +49,29 @@ export default function Historico() {
   const [modoStory, setModoStory] = useState<"semana" | "mes">("semana");
   const [storySessao, setStorySessao] = useState<StoryImediatoDados | null>(null);
 
+  const obterVolumeSessao = (s: SessaoTreino): number => {
+    if (s.volume_total !== undefined && s.volume_total > 0) {
+      return s.volume_total;
+    }
+    let vol = 0;
+    s.exercicios.forEach((ex) => {
+      if (ex.series && ex.series.length > 0) {
+        ex.series.forEach((serie) => {
+          if (serie.concluida) {
+            const c = parseCargaNumero(serie.carga) || parseCargaNumero(ex.carga);
+            const r = parseRepsNumero(serie.repeticoes, parseRepsNumero(ex.repeticoes, 10));
+            vol += c * r;
+          }
+        });
+      } else if (ex.concluido) {
+        const c = parseCargaNumero(ex.carga);
+        const r = parseRepsNumero(ex.repeticoes, 10);
+        vol += c * r * (ex.series_planejadas || 3);
+      }
+    });
+    return Math.round(vol);
+  };
+
   const abrirStoryDaSessao = (sessao: SessaoTreino) => {
     let volumeTotal = 0;
     let totalSeries = 0;
@@ -61,8 +85,8 @@ export default function Historico() {
           if (s.concluida) {
             seriesFeitas++;
             totalSeries++;
-            const c = Number(s.carga) || 0;
-            const r = Number(s.repeticoes) || 0;
+            const c = parseCargaNumero(s.carga) || parseCargaNumero(ex.carga);
+            const r = parseRepsNumero(s.repeticoes, parseRepsNumero(ex.repeticoes, 10));
             volumeTotal += c * r;
             if (c > (cargaMax ?? 0)) {
               cargaMax = c;
@@ -70,11 +94,13 @@ export default function Historico() {
           }
         });
       } else {
-        seriesFeitas = ex.series_planejadas;
-        totalSeries += ex.series_planejadas;
-        const c = Number(ex.carga) || 0;
+        const qtdSeries = ex.series_planejadas || 3;
+        seriesFeitas = qtdSeries;
+        totalSeries += qtdSeries;
+        const c = parseCargaNumero(ex.carga);
+        const r = parseRepsNumero(ex.repeticoes, 10);
         cargaMax = c;
-        volumeTotal += c * 10 * ex.series_planejadas;
+        volumeTotal += c * r * qtdSeries;
       }
 
       if (seriesFeitas > 0) {
@@ -299,6 +325,19 @@ export default function Historico() {
                             <i className="bi bi-stopwatch" /> {sessao.duracao_min} min
                           </span>
                         ) : null}
+                        {(() => {
+                          const vol = obterVolumeSessao(sessao);
+                          if (vol <= 0) return null;
+                          return (
+                            <span>
+                              <i className="bi bi-bar-chart-fill" />{" "}
+                              {vol >= 1000
+                                ? `${(vol / 1000).toFixed(1)} ton`
+                                : `${vol.toLocaleString("pt-BR")} kg`}{" "}
+                              vol.
+                            </span>
+                          );
+                        })()}
                       </div>
                     </div>
                     <div className="sessao-historico__seta">

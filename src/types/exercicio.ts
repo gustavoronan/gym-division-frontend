@@ -45,6 +45,7 @@ export interface SessaoTreino {
   criada_em: string;
   total_exercicios: number;
   total_concluidos: number;
+  volume_total?: number;
   exercicios: SessaoExercicio[];
 }
 
