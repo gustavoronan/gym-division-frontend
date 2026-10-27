@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/Auth/authContext";
 import GifExercicio from "../../components/GifExercicio/GifExercicio";
@@ -146,22 +146,6 @@ export default function Sessao() {
   const total = exercicios.length;
   const feitos = exercicios.filter((e) => e.concluido).length;
   const terminou = total > 0 && feitos === total;
-
-  // Volume total calculado acumulado em tempo real com base nas séries e exercícios
-  const volumeTotalCalculado = useMemo(() => {
-    let vol = 0;
-    exercicios.forEach((ex) => {
-      const series = obterSeries(ex);
-      series.forEach((s) => {
-        if (s.concluida) {
-          const c = parseCargaNumero(s.carga) || parseCargaNumero(ex.carga);
-          const r = parseRepsNumero(s.repeticoes, parseRepsNumero(ex.repeticoes, 10));
-          vol += c * r;
-        }
-      });
-    });
-    return Math.round(vol);
-  }, [exercicios, obterSeries]);
 
   const alternarExercicio = async (id: number, concluido: boolean) => {
     try {
@@ -484,11 +468,6 @@ export default function Sessao() {
                 <>
                   <strong>
                     <i className="bi bi-trophy-fill" /> Treino concluído!
-                    {volumeTotalCalculado > 0 && (
-                      <span className="resumo__volume-badge">
-                        · {volumeTotalCalculado >= 1000 ? `${(volumeTotalCalculado / 1000).toFixed(1)} t` : `${volumeTotalCalculado.toLocaleString("pt-BR")} kg`} vol.
-                      </span>
-                    )}
                   </strong>
                   <span>Excelente trabalho! Salve no histórico para contar o streak.</span>
                 </>
@@ -496,11 +475,6 @@ export default function Sessao() {
                 <>
                   <strong>
                     {feitos} de {total} concluídos
-                    {volumeTotalCalculado > 0 && (
-                      <span className="resumo__volume-badge">
-                        · {volumeTotalCalculado >= 1000 ? `${(volumeTotalCalculado / 1000).toFixed(1)} t` : `${volumeTotalCalculado.toLocaleString("pt-BR")} kg`}
-                      </span>
-                    )}
                   </strong>
                   <span>
                     {feitos === 0
@@ -698,17 +672,6 @@ export default function Sessao() {
                 <div>
                   <strong>{feitos} de {total}</strong>
                   <span>Exercícios concluídos</span>
-                </div>
-              </div>
-              <div className="resumo-box__item">
-                <i className="bi bi-bar-chart-fill" />
-                <div>
-                  <strong>
-                    {volumeTotalCalculado >= 1000
-                      ? `${(volumeTotalCalculado / 1000).toFixed(1)} t`
-                      : `${volumeTotalCalculado.toLocaleString("pt-BR")} kg`}
-                  </strong>
-                  <span>Volume total somado</span>
                 </div>
               </div>
             </div>

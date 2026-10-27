@@ -303,12 +303,6 @@ button:disabled {
   color: var(--muted);
 }
 
-.resumo__volume-badge {
-  font-weight: 600;
-  color: var(--accent);
-  margin-left: 2px;
-}
-
 .ring {
   position: relative;
   flex: none;
@@ -1644,7 +1638,7 @@ button:disabled {
 
 .modal-finalizar__resumo-box {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
